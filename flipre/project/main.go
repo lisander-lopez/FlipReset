@@ -27,4 +27,22 @@ func main() {
 	fmt.Println("Server started at localhost:3000")
 	// Start and run the server
 	router.Run(":3000")
+
+	api.GET("/directmessage", directmessage)
+	api.GET("/upload", upload)
+}
+
+func directmessage(c *gin.Context) {
+	c.Header("Content-Type", "html/text")
+	c.JSON(http.StatusOK, gin.H{
+		"message": "direct message handler not implemented ",
+	})
+
+}
+
+func upload(c *gin.Context) {
+	c.Header("Content-Type", "html/text")
+	c.JSON(http.StatusOK, gin.H{
+		"message": "upload handler not implemented ",
+	})
 }
