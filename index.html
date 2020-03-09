@@ -13,13 +13,21 @@
 			href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
 		/>
 		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/animate.css" />
 	</head>
 	<body>
 		<div class="wide">
 			<nav class="">
 				<div class="nav-col-1">
-					<div class="header-cam">
+					<div class="header-cam dropdown-btn">
 						<a href="#"><i class="las la-video"></i></a>
+						<div id="dropdownMenu" class="dropdown-content">
+							<form action="upload.php" method="POST" id="uploadForm">
+								<input type="file" multiple />
+								<p>Drag your files here or click in this area.</p>
+								<button type="submit">Upload</button>
+							</form>
+						</div>
 					</div>
 				</div>
 				<div class="nav-col-2">
@@ -33,7 +41,7 @@
 			</nav>
 		</div>
 		<div class="feed">
-			<div class="post">
+			<div class="post animated bounceInLeft delay-1s">
 				<div class="post-header">
 					<div class="post-author">
 						<a href="#">
@@ -100,12 +108,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="pure-g post">
-				<div class="pure-g post-header">
+			<div class="post animated bounceInLeft delay-1s">
+				<div class="post-header animated bounceInLeft delay-1s">
 					<div class="pure-u-1-2 post-author">
 						<a href="#">
 							<img
-								class="pure-img"
+								class="img"
 								src="https://www.speakingtigerbooks.com/wp-content/uploads/2016/09/facebook-default-no-profile-pic.jpg"
 								alt="Author Picture"
 								srcset=""
@@ -167,7 +175,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="post">
+			<div class="post animated bounceInLeft delay-1s">
 				<div class="post-header">
 					<div class="post-author">
 						<a href="#">
@@ -248,6 +256,9 @@
 				>
 			</div>
 		</footer>
+
+		<script src="js/jquery-3.4.1.min.js"></script>
+		<script src="js/script.js"></script>
 	</body>
 </html>
 
