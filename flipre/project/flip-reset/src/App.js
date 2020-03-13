@@ -5,6 +5,7 @@ import Header from "./header/header";
 import Home from "./home/home";
 import DM from "./directmessage/DM";
 import Profile from "./profile/profile";
+import ChatPro from "./profile/chatpro";
 import {
 	BrowserRouter as Router,
 	Switch,
@@ -38,6 +39,9 @@ function App() {
 				</Route>
 				<Route path="/profile">
 					<Profile />
+				</Route>
+				<Route path="/chatpro">
+					<ChatPro />
 				</Route>
 			</Switch>
 		</Router>
