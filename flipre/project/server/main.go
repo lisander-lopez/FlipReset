@@ -24,9 +24,9 @@ func main() {
 			})
 		})
 	}
-	fmt.Println("Server started at localhost:3000")
+	fmt.Println("Server started at localhost:8000")
 	// Start and run the server
-	router.Run(":3000")
+	router.Run(":8000")
 }
 
 func directmessage(c *gin.Context) {

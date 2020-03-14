@@ -29,7 +29,8 @@ COPY . .
 
 # GET DEPENDENCIES FOR GO/NPM
 WORKDIR $GOPATH/src/flipre/project/flip-reset
-RUN npm update
+RUN npm install -g npm
+RUN npm install
 WORKDIR $GOPATH/src/flipre/project/server
 RUN go get
 
