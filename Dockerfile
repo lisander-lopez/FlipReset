@@ -28,10 +28,11 @@ WORKDIR $GOPATH/src
 COPY . .
 
 # GET DEPENDENCIES FOR GO/NPM
-WORKDIR $GOPATH/src/flipre/project/flip-reset
+WORKDIR $GOPATH/src/project/flip-reset
 RUN npm install -g npm
 RUN npm install
-WORKDIR $GOPATH/src/flipre/project/server
+RUN npm run build
+WORKDIR $GOPATH/src/project/server
 RUN go get
 
 # EXPOST PORT TO ACCESS CONTAINER

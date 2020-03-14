@@ -1,0 +1,60 @@
+.item1 { 
+    grid-area: header; 
+}
+.item2 { 
+    grid-area: menu; 
+    border-radius: 5%;
+
+}
+.item3 {
+     grid-area: main; 
+     border-radius: 5%;
+    }
+.item4 {
+     grid-area: right; 
+     border-radius: 5%;
+    }
+.item5 {
+     grid-area: footer; 
+    }
+.item6 {
+    grid-area: friend; 
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header header header header'
+    'menu  main main right'
+    'menu  footer footer friend';
+  grid-gap: 10px;    
+  background-color: rebeccapurple;
+  padding: 10px;
+  justify-self: center;
+  width:80%;
+  margin: 0 auto;
+
+
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 10px 0;
+  font-size: 30px;
+}
+
+.profile-feed {
+	display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	width: 80%;
+    margin: 0 auto;
+    border: 10px solid rebeccapurple;
+}
+
+.profile-post-content {
+	justify-self: center;
+    background-color: rebeccapurple;
+    padding: 50%;
+    border: 1px solid #dbdbdb;
+}
