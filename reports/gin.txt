@@ -1,0 +1,45 @@
+What does this tech accomplish for you ?
+Gin which is written in GoLang is setting up a testing TCP server for us to run our project on. In the future Gin will be working in our MVC architecture to
+accomplish the part of the controller, or the middleman between the react app and the database. FOR EXAMPLE: a user registers a username and password and their
+input will be sent in a JSON to the controller and will be parsed out and sent to the database as that persons username and password for our site. Right now this
+is simply setting up a TCPserver just like the one we did in class with no extra usability needed until the database and connection to it is needed. 
+
+How This technology accomplishes this ?
+the gin package implements a HTTP web framework called gin which is used to set up a tcpserver in golang. This is the same as the one that was written in class but now has
+capabilities of routing and as a middleman between react and the database which will be implemented next phase.
+
+-we use gin.Default() which creates a gin router with default middleware but our routing is being done with react router DOM
+which is explained in another report. using gin gives us a html response code logger and recovery (crash-free) middleware
+https://github.com/gin-gonic/gin/blob/master/gin.go#L157
+
+-we use gin.Use to create a logger for response code messages to be placed right in the terminal for us to use while testing
+https://github.com/gin-gonic/gin/blob/master/gin.go#L237
+
+-we use gin.Run which attaches the router to an http server even though were not using the routing through gin were using it with 
+react router dom but this will allow us to use gin as the controller middleman connection between react and our database in the future.
+https://github.com/gin-gonic/gin/blob/master/gin.go#L296
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Manuel Martínez-Almeida
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+what this means for our project is that we get to use this free of charge and that it belongs to us furthermore.
