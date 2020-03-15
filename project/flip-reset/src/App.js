@@ -7,6 +7,8 @@ import DM from "./directmessage/DM";
 import Profile from "./profile/profile";
 import ChatPro from "./profile/chatpro";
 import Login from "./login/login"
+import Register from "./register/register"
+
 import {
 	BrowserRouter as Router,
 	Switch,
@@ -34,6 +36,9 @@ function App() {
 			<Switch>
 				<Route path="/" exact>
 					<Login />
+				</Route>
+				<Route path="/register">
+					<Register />
 				</Route>
 				<Route path="/home">
 					<Header />

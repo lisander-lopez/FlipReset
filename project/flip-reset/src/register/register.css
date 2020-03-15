@@ -1,12 +1,12 @@
 
-.Login {
+.Register {
     grid-template-columns: 1fr;
     margin: 10% auto;
     text-align: center;
     padding: 50px;
 }
 
-.title-label{
+.title-label-reg{
     display: inline-block;
 	font-family: "Charm", cursive;
 	font-weight: 100;
@@ -18,13 +18,19 @@
   -2px -2px 0 #000;
 }
 
-.username-label{
+.username-label-reg{
     display: inline-block;
 	font-family: "Charm", cursive;
     font-size: 15px;
 }
 
-.password-label{
+.password-label-reg{
+    display: inline-block;
+	font-family: "Charm", cursive;
+    font-size: 15px;
+}
+
+.confirm-label-reg{
     display: inline-block;
 	font-family: "Charm", cursive;
     font-size: 15px;

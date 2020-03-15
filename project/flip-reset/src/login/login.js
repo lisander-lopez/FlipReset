@@ -29,6 +29,9 @@ class Login extends Component {
                             <Link to="/home">
                                 <button className="btn btn-primary submit-button">submit</button>
                             </Link>
+                            <Link to="/register">
+                                <button className="btn btn-primary register-button">register</button>
+                            </Link>
                         </div>
                     </form>
                 </div>
