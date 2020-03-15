@@ -34,7 +34,7 @@ function Header() {
 				</div>
 				<div class="nav-col-2">
 					<div class="nav-text">
-						<Link to="/">FlipReset</Link>
+						<Link to="/home">FlipReset</Link>
 					</div>
 				</div>
 				<div class="nav-col-3">

@@ -1,0 +1,30 @@
+
+.Login {
+    grid-template-columns: 1fr;
+    margin: 10% auto;
+    text-align: center;
+}
+
+.title-label{
+    display: inline-block;
+	font-family: "Charm", cursive;
+	font-weight: 100;
+    font-size: 100px;
+    color: rebeccapurple;
+    text-shadow: -2px 2px 0 #000,
+    2px 2px 0 #000,
+   2px -2px 0 #000,
+  -2px -2px 0 #000;
+}
+
+.username-label{
+    display: inline-block;
+	font-family: "Charm", cursive;
+    font-size: 15px;
+}
+
+.password-label{
+    display: inline-block;
+	font-family: "Charm", cursive;
+    font-size: 15px;
+}

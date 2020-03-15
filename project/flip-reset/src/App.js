@@ -6,6 +6,7 @@ import Home from "./home/home";
 import DM from "./directmessage/DM";
 import Profile from "./profile/profile";
 import ChatPro from "./profile/chatpro";
+import Login from "./login/login"
 import {
 	BrowserRouter as Router,
 	Switch,
@@ -29,19 +30,25 @@ function App() {
 				href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
 			/>
 			<link rel="stylesheet" href="animate.css" />
-			<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"></link>
-			<Header />
+
 			<Switch>
 				<Route path="/" exact>
+					<Login />
+				</Route>
+				<Route path="/home">
+					<Header />
 					<Home />
 				</Route>
 				<Route path="/messages">
+					<Header />
 					<DM />
 				</Route>
 				<Route path="/profile">
+					<Header />
 					<Profile />
 				</Route>
 				<Route path="/chatpro">
+					<Header />
 					<ChatPro />
 				</Route>
 			</Switch>
