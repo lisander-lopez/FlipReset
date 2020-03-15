@@ -1,0 +1,129 @@
+
+What is React JS?
+
+    React Javascript is a front end library that comes with many built in features for creating stateful, 
+dynamic web apps. Its main feature is using whats called JSX, which is essentially javascript that returns 
+both normal HTML elements as well as user defined HTML elements. These user defined HTML elements are 
+called components. Everything in React is defined as a component. These components also act like classes, 
+having constructors for their initial state and component-specific helper functions. 
+
+What is React doing for us?
+
+    React JS also comes with a built in development server through npm. Although we do not make use this dev 
+server, we do make use of the npm "build" script. This creates a production build of the react code through webpack. Both npm and webpack will have a segment further down. We also make use of Reacts ability to easily 
+make asynchronous javascript calls to wherever we need it to.
+
+How does React accomplish these tasks?
+
+    The way that React makes asynchronous calls is through statefulness and user defined helper functions.
+The state, which is designed in the constructor for a component, keeps tabs on all of the elements of the
+component which can change over time, and when the user calls the function setState() from one of their 
+helper functions, React will asynchronously rerender the parts of the page that contain the state being 
+updated. The helper functions can set the state based on user input or API calls, hence the statement that
+the asynchronous calls can be made to wherever we need them to be made from.
+
+React JS License:
+
+    React JS is licensed under the MIT licence, as per https://github.com/facebook/react/blob/master/LICENSE:
+
+    MIT License
+
+    Copyright (c) Facebook, Inc. and its affiliates.
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+React JS Libraries and depenecy functionality:
+
+    Webpack JS:
+    - What is it?
+      - Webpack is a bundler that will transform the react jsx code into vanilla js
+        and optimize this vanilla js, so it can be rendered properly and as fast as
+        possible
+
+    - What does it solve?
+      - Webpack doesn't solve a specific problem from class for us, but it creates a 
+        viable entry point for our golang back end to grab from, and allows us to have
+        the full functionality of React.
+
+    - How does it do this?
+      - Webpack has many dependencies to help it out, but it uses Common JS and Require
+        JS to transform the import statements and JSX statements into vanilla js for the
+        browser to render.
+    - License:
+      - Webpack is MIT Licensed. https://webpack.js.org/license/
+
+    
+    npm, build: 
+    - What is it?      
+      - npm, or node package manager, is a node.js package that allows for a local repository
+        to be stored. But for FlipReset, we make use of one specific thing. The build scripts.
+        These scripts, run by the command "npm run build" will take all of our react code, and 
+        uses webpack to create the vanilla files in a build directory, making them static.
+
+    - What does it solve?
+      - See webpack js
+
+    - How does it do this?
+      - See webpack js
+
+    - License:
+      - npm is MIT licensed.
+
+
+    React Router DOM:
+
+    - What is it?
+      - React Router DOM is a front end routing library for react in order to have react webapps
+        that are more than one page.
+
+    - What does it solve?
+      - From class, we had to make a relatively complicated structure on the back end that will 
+        decide if/when/where to serve data. This library cleans that up by just creating a 
+        component to decide what page to render based on the URL path.
+
+    - How does it solve this?
+      - React Router DOM does pseudo routing; it doesn't really render new pages. The <Router> 
+        component takes in a series of <Route> components, which contain a component to render
+        and a URL path, and then will simply render the element that is inside of the <Route>
+        that matches the path.
+
+    - License:
+      - React Router DOM is MIT Licensed, as per https://github.com/ReactTraining/react-router/blob/master/LICENSE
+
+        MIT License
+
+    Copyright (c) React Training 2016-2018
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
