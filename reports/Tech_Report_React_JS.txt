@@ -1,3 +1,20 @@
+What is JQuery?
+	JQuery is a JavaScript library that provides a fast and efficient way to use JavaScript. JQuery exposes various APIs that
+	allow for easy DOM traversal and manipulation. It makes various JavaScript functionalities easier for us to use.
+
+What is JQuery doing for us?
+	JQuery is currently only used for event handling and DOM Manipulation. Whenever a user types in a textbox, it checks whether
+	or not the textbox is empty. If it is empty we are going to add a CSS class that tells the user that they cannot post.
+
+How does JQuery accomplish these tasks?
+	JQuery attatches an event handler listening for a keyup event. So whenever a user finshes typing a key, we check to
+	see if its empty. If it is not empty we will enable the button by adding a CSS class to the DOM button element.
+
+JQuery License: 
+
+	Projects referencing this document are released under the terms of the MIT license.
+	The MIT License is simple and easy to understand and it places almost no restrictions on what you can do with the Project.
+	You are free to use the Project in any other project (even commercial projects) as long as the copyright header is left intact.
 
 What is React JS?
 
