@@ -8,8 +8,19 @@ import {
     useParams
 } from "react-router-dom";
 import "./login.css";
+import firebase from 'firebase';
+
 
 class Login extends Component {
+    constructor(){
+        super();
+            this.state = {
+                Username: '',
+                Password: ''
+            };
+    }
+
+
     render() {
         return (
                 <div className="Login">
@@ -20,7 +31,8 @@ class Login extends Component {
                         <div className="entry">
                             <div>
                                 <label className="username-label">Username: </label>
-                                <input className="username-input" type="text" />
+                                <input className= "username-input" type="text" value = {this.state.Username} />
+                                
                             </div>
                             <div>
                                 <label className="password-label">Password: </label>

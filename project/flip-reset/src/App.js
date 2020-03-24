@@ -8,7 +8,6 @@ import Profile from "./profile/profile";
 import ChatPro from "./profile/chatpro";
 import Login from "./login/login"
 import Register from "./register/register"
-
 import {
 	BrowserRouter as Router,
 	Switch,
@@ -17,6 +16,7 @@ import {
 	useRouteMatch,
 	useParams
 } from "react-router-dom";
+
 
 function App() {
 	return (
@@ -62,3 +62,4 @@ function App() {
 }
 
 export default App;
+
