@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+
 	// Set the router as the default one shipped with Gin
 	router := gin.Default()
 
@@ -27,4 +28,5 @@ func main() {
 	fmt.Println("Server started at localhost:8000")
 	// Start and run the server
 	router.Run(":8000")
+
 }
