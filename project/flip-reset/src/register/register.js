@@ -1,70 +1,155 @@
-import React, { Component } from "react";
 import "./register.css";
-import fire from '../fire.js';
+import React, { Component } from 'react';
+import { Link, withRouter, Redirect } from 'react-router-dom';
+import { compose } from 'recompose';
 
 
+import { withFirebase } from '../components/Firebase';
 
+const SignUpPage = () => (
+  <div>
+    <SignUpForm />
+  </div>
+);
 
-class Register extends Component {
-    constructor() {
-        super();
-        this.state = {
-            Email: '',
-            Password: ''
-        };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    }
+const INITIAL_STATE = {
+  username: '',
+  email: '',
+  passwordOne: '',
+  passwordTwo: '',
+  isAdmin: false,
+  error: null,
+};
 
-    handleChange(e) {
-        this.setState({
-            [e.target.name]: e.target.value
+const ERROR_CODE_ACCOUNT_EXISTS = 'auth/email-already-in-use';
+
+const ERROR_MSG_ACCOUNT_EXISTS = `
+  An account with this E-Mail address already exists.
+  Try to login with this account instead. If you think the
+  account is already used from one of the social logins, try
+  to sign in with one of them. Afterward, associate your accounts
+  on your personal account page.
+`;
+
+class SignUpFormBase extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { ...INITIAL_STATE };
+  }
+
+  onSubmit = event => {
+    event.preventDefault();
+
+    const { username, email, passwordOne, isAdmin } = this.state;
+    const roles = {};
+
+    this.props.firebase
+      .doCreateUserWithEmailAndPassword(email, passwordOne)
+      .then(authUser => {
+        // Create a user in your Firebase realtime database
+        return this.props.firebase.user(authUser.user.uid).set({
+          username,
+          email,
         });
-    }
-
-    
-    handleSubmit(e) {
-        e.preventDefault();
-        const itemsRef = fire.database().ref('Users');
-        const item = {
-          Email: this.state.Email,
-          Password: this.state.Password
+      })
+      .then(() => {
+        return this.props.firebase.doSendEmailVerification();
+      })
+      .then(() => {
+        this.setState({ ...INITIAL_STATE });
+        this.props.history.push(<Redirect to="/home"/>);
+      })
+      .catch(error => {
+        if (error.code === ERROR_CODE_ACCOUNT_EXISTS) {
+          error.message = ERROR_MSG_ACCOUNT_EXISTS;
         }
-        itemsRef.push(item);
-        this.setState({
-          Email: '',
-          Password: ''
-        });
-      }
 
-    render() {
-        return (
-            <div className="Register">
-                <div>
-                    <label className="title-label-reg">FlipReset</label>
-                </div>
-                <form onSubmit={this.handleSubmit}>
-                    <div className="entry-reg">
-                        <div>
-                            <label className="username-label-reg">Username: </label>
-                            <input type="text" name="Email" onChange={this.handleChange} value={this.state.Email}/>
-                        </div>
-                        <div>
-                            <label className="password-label-reg">Password: </label>
-                            <input type="text" name="Password" onChange={this.handleChange} value={this.state.Password} />
-                        </div>
-                        {/* <div>
-                            <label className="confirm-label-reg">Confirm: </label>
-                            <input className="confirm-input-reg" type="password" />
-                        </div> */}
-                        {/* <Link to="/"> */}
-                            <button className="btn btn-primary submit-button-reg">submit</button>
-                         {/* </Link>  */}
-                    </div>
-                </form>
-            </div>
-        );
-    }
+        this.setState({ error });
+      });
+  };
+
+  onChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  onChangeCheckbox = event => {
+    this.setState({ [event.target.name]: event.target.checked });
+  };
+
+  render() {
+    const {
+      username,
+      email,
+      passwordOne,
+      passwordTwo,
+      error,
+    } = this.state;
+
+    const isInvalid =
+      passwordOne !== passwordTwo ||
+      passwordOne === '' ||
+      email === '' ||
+      username === '';
+
+    return (
+        <div className="Register">
+      <form onSubmit={this.onSubmit}>
+      <div className="entry">
+        <div>
+            <label className="title-label">FlipReset</label>
+        </div>
+        <input
+          name="username"
+          value={username}
+          onChange={this.onChange}
+          type="text"
+          placeholder="Full Name"
+        />
+        <input
+          name="email"
+          value={email}
+          onChange={this.onChange}
+          type="text"
+          placeholder="Email Address"
+        />
+        <input
+          name="passwordOne"
+          value={passwordOne}
+          onChange={this.onChange}
+          type="password"
+          placeholder="Password"
+        />
+        <input
+          name="passwordTwo"
+          value={passwordTwo}
+          onChange={this.onChange}
+          type="password"
+          placeholder="Confirm Password"
+        />
+        <button disabled={isInvalid} type="submit">
+          Sign Up
+        </button>
+
+        {error && <p>{error.message}</p>}
+        </div>
+      </form>
+      </div>
+    );
+  }
 }
 
-export default Register;
+const SignUpLink = () => (
+  <p>
+    Don't have an account? <Link to={"/register"}>Sign Up</Link>
+  </p>
+);
+
+const SignUpForm = compose(
+  withRouter,
+  withFirebase,
+)(SignUpFormBase);
+
+export default SignUpPage;
+
+export { SignUpForm, SignUpLink };

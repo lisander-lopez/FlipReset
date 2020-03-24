@@ -36,7 +36,7 @@ class Login extends Component {
                             </div>
                             <div>
                                 <label className="password-label">Password: </label>
-                                <input className="password-input" type="password" />
+                                <input className="password-input" type="password" value = {this.state.Password}/>
                             </div>
                             <Link to="/home">
                                 <button className="btn btn-primary submit-button">submit</button>
