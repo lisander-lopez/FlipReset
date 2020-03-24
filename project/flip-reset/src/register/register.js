@@ -9,7 +9,7 @@ class Register extends Component {
     constructor() {
         super();
         this.state = {
-            Username: '',
+            Email: '',
             Password: ''
         };
     this.handleChange = this.handleChange.bind(this);
@@ -24,15 +24,15 @@ class Register extends Component {
 
     
     handleSubmit(e) {
-        // e.preventDefault();
+        e.preventDefault();
         const itemsRef = fire.database().ref('Users');
         const item = {
-          Username: this.state.Username,
+          Email: this.state.Email,
           Password: this.state.Password
         }
         itemsRef.push(item);
         this.setState({
-          Username: '',
+          Email: '',
           Password: ''
         });
       }
@@ -47,7 +47,7 @@ class Register extends Component {
                     <div className="entry-reg">
                         <div>
                             <label className="username-label-reg">Username: </label>
-                            <input type="text" name="Username" onChange={this.handleChange} value={this.state.Username}/>
+                            <input type="text" name="Email" onChange={this.handleChange} value={this.state.Email}/>
                         </div>
                         <div>
                             <label className="password-label-reg">Password: </label>
@@ -56,8 +56,8 @@ class Register extends Component {
                         {/* <div>
                             <label className="confirm-label-reg">Confirm: </label>
                             <input className="confirm-input-reg" type="password" />
-                        </div>
-                        <Link to="/"> */}
+                        </div> */}
+                        {/* <Link to="/"> */}
                             <button className="btn btn-primary submit-button-reg">submit</button>
                          {/* </Link>  */}
                     </div>
