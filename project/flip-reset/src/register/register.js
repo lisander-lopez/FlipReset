@@ -4,6 +4,7 @@ import { Link, withRouter, Redirect } from 'react-router-dom';
 import { compose } from 'recompose';
 
 
+
 import { withFirebase } from '../components/Firebase';
 
 const SignUpPage = () => (
@@ -93,7 +94,11 @@ class SignUpFormBase extends Component {
       username === '';
 
     return (
+      
         <div className="Register">
+        <Link to="/">
+      <button className="btn btn-primary submit-button-reg">Link to Sign In </button>
+       </Link>
       <form onSubmit={this.onSubmit}>
       <div className="entry">
         <div>

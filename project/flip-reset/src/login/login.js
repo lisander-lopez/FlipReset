@@ -3,52 +3,109 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
+    withRouter,
     Link,
     useRouteMatch,
-    useParams
+    useParams,
+    Redirect,
+
 } from "react-router-dom";
 import "./login.css";
-import firebase from 'firebase';
+import { compose } from 'recompose';
+import { withFirebase } from '../components/Firebase/context'
+
+const SignInPage = () => (
+    <div>
+        <SignInForm />
+    </div>
+);
 
 
-class Login extends Component {
-    constructor(){
-        super();
-            this.state = {
-                Username: '',
-                Password: ''
-            };
+const INITIAL_STATE = {
+    email: '',
+    password: '',
+    error: null,
+};
+
+const ERROR_CODE_ACCOUNT_EXISTS =
+    'auth/account-exists-with-different-credential';
+
+class SignInFormBase extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { ...INITIAL_STATE };
+
     }
 
+    onSubmit = event => {
+        const { email, password } = this.state;
+
+        this.props.firebase
+            .doSignInWithEmailAndPassword(email, password)
+            .then(() => {
+                this.setState({ ...INITIAL_STATE });
+                this.props.history.push('/home');
+            })
+            .catch(error => {
+                this.setState({ error });
+            });
+
+        event.preventDefault();
+    };
+
+
+
+    onChange = event => {
+        this.setState({ [event.target.name]: event.target.value });
+    };
 
     render() {
+        const { email, password, error } = this.state;
+
+        const isInvalid = password === '' || email === '';
+
         return (
-                <div className="Login">
-                    <div>
-                        <label className="title-label">FlipReset</label>
-                    </div>
-                    <form>
-                        <div className="entry">
-                            <div>
-                                <label className="username-label">Username: </label>
-                                <input className= "username-input" type="text" value = {this.state.Username} />
-                                
-                            </div>
-                            <div>
-                                <label className="password-label">Password: </label>
-                                <input className="password-input" type="password" value = {this.state.Password}/>
-                            </div>
-                            <Link to="/home">
-                                <button className="btn btn-primary submit-button">submit</button>
-                            </Link>
-                            <Link to="/register">
-                                <button className="btn btn-primary register-button">register</button>
-                            </Link>
-                        </div>
-                    </form>
+            <div className="Login">
+                <div>
+                    <label className="title-label">FlipReset</label>
                 </div>
+                <form onSubmit={this.onSubmit}>
+                    <input
+                        className="username-label"
+                        name="email"
+                        value={email}
+                        onChange={this.onChange}
+                        type="text"
+                        placeholder="Email Address"
+                    />
+                    <input
+                        className="password-label"
+                        name="password"
+                        value={password}
+                        onChange={this.onChange}
+                        type="password"
+                        placeholder="Password"
+                    />
+                    <button disabled={isInvalid} type="submit">
+                        Sign In
+        </button>
+                
+                    {error && <p>{error.message}</p>}
+                </form>
+                <Link to="/register">
+                    <button className="btn btn-primary register-button">Register</button>
+                </Link>
+            </div>
         );
     }
 }
 
-export default Login;
+
+const SignInForm = compose(
+    withRouter,
+    withFirebase,
+)(SignInFormBase);
+
+export default SignInPage;
+
+export {SignInForm};

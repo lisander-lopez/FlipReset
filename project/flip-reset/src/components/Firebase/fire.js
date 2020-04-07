@@ -28,10 +28,11 @@ const config = {
 
 class fire {
   constructor() {
-    console.log(process.env);
+    //console.log(process.env);
     firebase.initializeApp(config);
 
     /* Helper */
+    
     this.emailAuthProvider = firebase.auth.EmailAuthProvider;
 
     this.auth = firebase.auth();
@@ -55,9 +56,8 @@ class fire {
     });
   }
 
-  doSignInWithEmailAndPassword = (email, password) => {
-    this.auth.signInWithEmailAndPassword(email, password);
-  }
+  doSignInWithEmailAndPassword = (email, password) =>
+  this.auth.signInWithEmailAndPassword(email, password);
   /*
 
    doSignInWithGoogle = () =>
