@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
+import 'firebase/storage';
 
 // import 'firebase/messaging';
 
@@ -37,14 +38,39 @@ class fire {
 
     this.auth = firebase.auth();
     this.db = firebase.database();
-
+    const storage = firebase.storage();
+    this.storageRef = storage.ref();
+   
     /* Social Sign In Method Provider */
     /*
     this.googleProvider = new app.auth.GoogleAuthProvider();
     this.facebookProvider = new app.auth.FacebookAuthProvider();
     this.twitterProvider = new app.auth.TwitterAuthProvider();
     */
+   //export const storage = firebase.storage()
+   //export const storageRef = storage.ref();
   }
+
+
+ doGrabFile = () => {
+    const image = firebase.storage().ref().child('upload');
+    let testing = image.getDownloadURL();
+    let ans = testing.then(function(url){
+      return url;
+    })
+    return ans;
+ }
+
+
+  doSubmitFile = (file) => { 
+      var timestamp = new Date();
+      console.log(timestamp)
+      let storeRef = this.storageRef.child(String(timestamp))
+      storeRef.put(file).then(function(snapshot) {
+      console.log('Uploaded a blob or file!');
+    });
+  }
+
 
   doCreateUserWithEmailAndPassword = (email, password) => {
     return this.auth.createUserWithEmailAndPassword(email, password);

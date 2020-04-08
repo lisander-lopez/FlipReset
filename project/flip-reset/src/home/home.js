@@ -2,9 +2,42 @@ import React, { Component } from "react";
 import $ from "jquery";
 import "./home.css";
 import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import {
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	Link,
+	useRouteMatch,
+	withRouter,
+	useParams
+} from "react-router-dom";
+import { withFirebase } from '../components/Firebase/context'
+import ReactPlayer from 'react-player'
+
+const tit = () => (
+	<div>
+		<Hohoho />
+	</div>
+);
 
 
 class Home extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			source: null,
+			url: null,
+			error: null,
+		}
+	}
+
+	async componentDidMount() {
+		const response = await this.props.firebase.doGrabFile();
+		this.setState({ source: response });
+		console.log(this.state.source);
+	}
+
 
 	handleKeyUp() {
 		$(".post-comment").keyup(data => {
@@ -41,7 +74,16 @@ class Home extends Component {
 							</a>
 						</div>
 					</div>
-					<div class="post-content"></div>
+					<div class="post-content">
+						<div className='player-wrapper'>
+							<ReactPlayer
+								className='react-player'
+								url={this.state.source}
+								width='100%'
+								height='100%'
+							/>
+						</div>
+					</div>
 					<div class="post-footer">
 						<div class="post-social">
 							<i class="las la-heart"></i>
@@ -101,17 +143,24 @@ class Home extends Component {
 		return posts;
 	}
 	render() {
-		
+
 		return <div class="feed">{this.generatePosts()}</div>;
 	}
 }
 
+
+const Hohoho = compose(
+	withRouter,
+	withFirebase,
+)(Home);
+
+
 const mapStateToProps = (state) => {
-    const { user} = state;
-    return {
-      user,
-    }
-  }
+	const { user } = state;
+	return {
+		user,
+	}
+}
 
 
-  export default connect(mapStateToProps, null)(Home);
+export default connect(mapStateToProps, null)(Hohoho);
