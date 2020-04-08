@@ -13,6 +13,9 @@ import {
 import "./login.css";
 import { compose } from 'recompose';
 import { withFirebase } from '../components/Firebase/context'
+import { connect } from 'react-redux';
+import { loginUser } from '../redux/actions'; 
+
 
 const SignInPage = () => (
     <div>
@@ -44,6 +47,7 @@ class SignInFormBase extends Component {
             .doSignInWithEmailAndPassword(email, password)
             .then(() => {
                 this.setState({ ...INITIAL_STATE });
+                this.props.loginUser(email);
                 this.props.history.push('/home');
             })
             .catch(error => {
@@ -106,6 +110,23 @@ const SignInForm = compose(
     withFirebase,
 )(SignInFormBase);
 
-export default SignInPage;
+//export default SignInPage;
 
-export {SignInForm};
+
+
+
+
+const mapStateToProps = (state) => {
+    const { user} = state;
+    return {
+      user,
+    }
+  }
+  
+  const mapDispatchToProps = {
+    loginUser,
+  }
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(SignInPage);
+
+  export {SignInForm};
