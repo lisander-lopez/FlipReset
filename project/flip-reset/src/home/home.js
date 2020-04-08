@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import $ from "jquery";
 import "./home.css";
+import { connect } from 'react-redux';
+
+
 class Home extends Component {
+
 	handleKeyUp() {
 		$(".post-comment").keyup(data => {
 			if (data.target.value !== "") {
@@ -12,6 +16,7 @@ class Home extends Component {
 		});
 	}
 	generatePosts() {
+		console.log(this.props.user.username)
 		let posts = [];
 
 		// Outer loop to create parent
@@ -96,8 +101,17 @@ class Home extends Component {
 		return posts;
 	}
 	render() {
+		
 		return <div class="feed">{this.generatePosts()}</div>;
 	}
 }
 
-export default Home;
+const mapStateToProps = (state) => {
+    const { user} = state;
+    return {
+      user,
+    }
+  }
+
+
+  export default connect(mapStateToProps, null)(Home);

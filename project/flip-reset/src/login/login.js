@@ -15,6 +15,7 @@ import { compose } from 'recompose';
 import { withFirebase } from '../components/Firebase/context'
 import { connect } from 'react-redux';
 import { loginUser } from '../redux/actions'; 
+import { isCompositeComponent } from "react-dom/test-utils";
 
 
 const SignInPage = () => (
@@ -45,9 +46,10 @@ class SignInFormBase extends Component {
 
         this.props.firebase
             .doSignInWithEmailAndPassword(email, password)
-            .then(() => {
+         .then(() => {
                 this.setState({ ...INITIAL_STATE });
-                this.props.loginUser(email);
+                this.props.loginUser(email)
+                console.log(this.props.user.username)
                 this.props.history.push('/home');
             })
             .catch(error => {
@@ -92,7 +94,7 @@ class SignInFormBase extends Component {
                     />
                     <button disabled={isInvalid} type="submit">
                         Sign In
-        </button>
+                    </button>
                 
                     {error && <p>{error.message}</p>}
                 </form>
@@ -112,10 +114,6 @@ const SignInForm = compose(
 
 //export default SignInPage;
 
-
-
-
-
 const mapStateToProps = (state) => {
     const { user} = state;
     return {
@@ -127,6 +125,6 @@ const mapStateToProps = (state) => {
     loginUser,
   }
   
-  export default connect(mapStateToProps, mapDispatchToProps)(SignInPage);
+  export default connect(mapStateToProps, mapDispatchToProps)(SignInForm);
 
   export {SignInForm};
