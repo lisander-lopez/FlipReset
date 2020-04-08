@@ -9,24 +9,31 @@ import {
 	useRouteMatch,
 	useParams
 } from "react-router-dom";
+import { connect } from 'react-redux';
 
-function Header() {
-	const toggleDropDown = event => {
+class Header extends Component {
+	constructor(props) {
+        super(props);
+    }
+
+	toggleDropDown = event => {
 		event.preventDefault();
 		$("#dropdownMenu").toggle("show");
 	};
+	 
+	render(){
 	return (
 		<div class="wide">
 			<nav class="">
 				<div class="nav-col-1">
 					<div class="header-cam dropdown-btn">
-						<a href="#" onClick={toggleDropDown}>
+						<a href="#" onClick={this.toggleDropDown}>
 							<i class="las la-video"></i>
 						</a>
 						<div id="dropdownMenu" class="dropdown-content">
 							<form action="upload.php" method="POST" id="uploadForm">
 								<input type="file" multiple />
-								<p>Drag your files here or click in this area.</p>
+								<p>{this.props.user.username}</p>
 								<button type="submit">Upload</button>
 							</form>
 						</div>
@@ -50,5 +57,15 @@ function Header() {
 			</nav>
 		</div>
 	);
+	}
 }
-export default Header;
+
+const mapStateToProps = (state) => {
+    const { user} = state;
+    return {
+      user,
+    }
+  }
+
+
+  export default connect(mapStateToProps, null)(Header);
