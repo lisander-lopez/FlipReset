@@ -42,7 +42,6 @@ class Prof extends Component {
 
 
 	generatePosts() {
-
 		let posts = [];
 		for (let i = 0; i < 20; i++) {
 			posts.push(
