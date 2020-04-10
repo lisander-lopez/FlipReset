@@ -53,8 +53,8 @@
 }
 
 .profile-post-content {
-	justify-self: center;
+    
     background-color: rebeccapurple;
-    padding: 50%;
+    padding: 1%;
     border: 1px solid #dbdbdb;
 }
