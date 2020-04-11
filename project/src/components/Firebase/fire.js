@@ -55,22 +55,18 @@ class fire {
 		let refToPath = this.db.ref(`posts/${uid}`);
 		let snap = await refToPath.once("value");
 		let names = Object.keys(snap.val());
-		names.forEach(async (element) => {
-			let url = await this.doGrabFile(element);
+		for (var i = 0; i <names.length;i++){
+			let url = await this.doGrabFile(names[i]);
 			ret.push(url);
-		});
+		} 
+	
+		console.log(ret[0])
 		return ret;
 	};
 
-	doGrabFile = async (name) => {
-		const image = firebase.storage().ref().child(name);
-		let testing = await image.getDownloadURL();
-		/*
-		let ans = testing.then(function (url) {
-			return url;
-		});
-		//return ans;
-		*/
+	doGrabFile = (name) => {
+		const  image= firebase.storage().ref().child(name);
+		let testing = image.getDownloadURL();
 		return testing;
 	};
 
