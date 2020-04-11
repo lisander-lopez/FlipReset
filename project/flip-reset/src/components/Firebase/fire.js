@@ -54,8 +54,6 @@ class fire {
 
 
   doGrabFile = () => {
-
-  
     var i = 0;
     this.storageRef.child('test1-cf3a2/posts/' + this.auth.currentUser.uid).listAll()
       .then(function(result){
@@ -64,10 +62,7 @@ class fire {
             console.log("image Reference"+imageRef.toString())
             i++;
         });
-      });
-
-
- 
+      })
   }
 
 
