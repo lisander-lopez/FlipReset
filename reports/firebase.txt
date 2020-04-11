@@ -1,0 +1,39 @@
+What does this tech accomplish for you?
+Firebase provides a real-time database and back-end service.
+The service provides application developers an API that allows application 
+data to be synchronized across clients and stored on Firebase's cloud.
+
+How this technology accomplishes this?
+Authenticate users with their email addresses and passwords.
+The Firebase Authentication SDK provides methods to create and
+manage users that use their email addresses and passwords to sign in. 
+https://firebase.google.com/docs/auth/web/password-auth
+
+This helps us upload our video files directly to the DB 
+https://firebase.google.com/docs/storage/web/upload-files
+
+and also download them back from firebase storage 
+https://firebase.google.com/docs/storage/web/download-files
+
+
+Apache 2.0
+Apache License
+Posted by: Margaret Rouse
+WhatIs.com
+Contributor(s): Ivy Wigmore
+
+The Apache License is a free and open source software (FOSS) licensing agreement from the Apache Software Foundation (ASF). 
+
+The agreement stipulates terms for use, reproduction, modification and distribution of any software that is released under the Apache License. Following are some of the core specifications of the Apache License 2.0: 
+
+    Software may be freely used, reproduced, modified, distributed or sold.
+    Software can be combined with other products and distributed or sold as packages.
+    Products derived or modified from licensed software can be distributed under other licenses.
+    Apache software cannot be redistributed without attribution.
+    A copy of the license must be redistributed along with any Apache software.
+    External contributions to the software are released under the ASF terms unless explicitly specified otherwise.
+
+All ASF software is released under the Apache license, unless it is specified otherwise. The licensing model is also freely available for use by non-ASF developers.
+ Apache License 2.0 and GNU General Public License (GPL) version 3 are considered compatible, which means that developers may freely mix code from software released under 
+ those licenses. However, the resulting software must be released under GPL
+. 3. Earlier versions of the licensing models are considered incompatible. 
