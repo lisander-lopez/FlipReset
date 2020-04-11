@@ -50,20 +50,28 @@ class fire {
 		//export const storage = firebase.storage()
 		//export const storageRef = storage.ref();
 	}
+	getVidList = async (uid) => {
+		let ret = [];
+		let refToPath = this.db.ref(`posts/${uid}`);
+		let snap = await refToPath.once("value");
+		let names = Object.keys(snap.val());
+		names.forEach(async (element) => {
+			let url = await this.doGrabFile(element);
+			ret.push(url);
+		});
+		return ret;
+	};
 
-	doGrabFile = () => {
-		console.log("Im in here!");
-		var i = 0;
-		this.storageRef
-			.child("test1-cf3a2/posts/" + this.auth.currentUser.uid)
-			.listAll()
-			.then(function (result) {
-				console.log(result);
-				result.items.forEach(function (imageRef) {
-					console.log("image Reference" + imageRef.toString());
-					i++;
-				});
-			});
+	doGrabFile = async (name) => {
+		const image = firebase.storage().ref().child(name);
+		let testing = await image.getDownloadURL();
+		/*
+		let ans = testing.then(function (url) {
+			return url;
+		});
+		//return ans;
+		*/
+		return testing;
 	};
 
 	doSubmitFile = (file) => {
