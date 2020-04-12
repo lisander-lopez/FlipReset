@@ -6,14 +6,15 @@ class DM extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			sender: 'Justin'
+			sender: 'Justin',
+			messages: [],
 		};
 	}
 
 	render() {
 		return (
 			<div class="conversation-container">
-				<ConversationContainer />
+				<ConversationContainer messages={this.state.messages}/>
 			</div>
 		);
 	}
@@ -41,7 +42,7 @@ class ConversationContainer extends Component {
 		this.state = {
 			// messages contains a list of message metadata
 			// the conversation component does all of the rendering
-			messages: [],
+			messages: this.props.messages,
 			theirName: 'Justin',
 			messageCount: 0,
 		}
@@ -50,11 +51,6 @@ class ConversationContainer extends Component {
 
 	// will be attached to send button of text box
 	updateMessageList(message) {
-		// const msgs = this.state.messages;
-		// let tempMsgs = [];
-		// tempMsgs.concat(msgs);
-		// tempMsgs.push(message);
-
 		this.setState({
 			messages: this.state.messages.concat(message),
 			messageCount: this.state.messages.length+1
@@ -90,7 +86,7 @@ class ConversationThread extends Component {
 			<ul class="conversation-list">
 				{this.props.messages.map(data => {
 					return (
-						<li key={data.i}>
+						<li key={data.message}>
 							{newMessage(data.i, data.sender, data.message, data.didReceive)}
 						</li>
 					);

@@ -12,8 +12,9 @@ import {
 	withRouter,
 	useParams
 } from "react-router-dom";
-import { withFirebase } from '../components/Firebase/context'
-import ReactPlayer from 'react-player'
+import { withFirebase } from '../components/Firebase/context';
+import ReactPlayer from 'react-player';
+import Post from './../components/common_modules/post';
 
 const tit = () => (
 	<div>
@@ -143,8 +144,11 @@ class Home extends Component {
 		return posts;
 	}
 	render() {
-
-		return <div class="feed">{this.generatePosts()}</div>;
+		return (
+			<div class="feed">
+				<Post/>
+			</div>
+		);
 	}
 }
 
