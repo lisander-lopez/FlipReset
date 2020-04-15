@@ -14,7 +14,7 @@ import "./login.css";
 import { compose } from 'recompose';
 import { withFirebase } from '../components/Firebase/context'
 import { connect } from 'react-redux';
-import { loginUser } from '../redux/actions'; 
+import { loginUser ,userUID} from '../redux/actions'; 
 import { isCompositeComponent } from "react-dom/test-utils";
 
 
@@ -50,6 +50,8 @@ class SignInFormBase extends Component {
                 this.setState({ ...INITIAL_STATE });
                 this.props.loginUser(email)
                 console.log(this.props.user.username)
+                this.props.userUID(this.props.firebase.auth.currentUser.uid)
+                console.log(this.props.user.uid)
                 this.props.history.push('/home');
             })
             .catch(error => {
@@ -123,6 +125,7 @@ const mapStateToProps = (state) => {
   
   const mapDispatchToProps = {
     loginUser,
+    userUID
   }
   
   export default connect(mapStateToProps, mapDispatchToProps)(SignInForm);
