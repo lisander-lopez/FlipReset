@@ -38,7 +38,7 @@ class Prof extends Component {
 	componentDidMount() {
 		// console.log(this.props.firebase.auth.currentUser.uid);
 		this.props.firebase.getVidList(
-			this.props.user.uid
+			this.props.firebase.auth.currentUser.uid
 		)
 			.then(result => {
 				this.setState({
@@ -52,48 +52,48 @@ class Prof extends Component {
 	}
 
 	handleSubmit(e) {
-		  console.log(e.target.src);
-		  this.props.saveURL(e.target.src) 
-		  console.log(this.props.user.url)
+		console.log(e.target.src);
+		this.props.saveURL(e.target.src)
+		console.log(this.props.user.url)
 	}
 
-generatePosts() {
-	let posts = [];
-	let views = this.state.source
-	for (let i = 0; i < this.state.length; i++) {
-		console.log(views[i])
-		posts.push(
-			<Link to="/chatpro" className="Deeznutsidk" onClick={this.handleSubmit}>
-				<div class="profile-post-content">
-					<div className="player-wrapper">
-						<ReactPlayer
-							className="react-player"
-							url={views[i]}
-							width="100%"
-							height="100%"
-						/>
+	generatePosts() {
+		let posts = [];
+		let views = this.state.source
+		for (let i = 0; i < this.state.length; i++) {
+			console.log(views[i])
+			posts.push(
+				<Link to="/chatpro" className="Deeznutsidk" onClick={this.handleSubmit}>
+					<div class="profile-post-content">
+						<div className="player-wrapper">
+							<ReactPlayer
+								className="react-player"
+								url={views[i]}
+								width="100%"
+								height="100%"
+							/>
+						</div>
 					</div>
-				</div>
-			</Link>
-		);
+				</Link>
+			);
+		}
+		return posts;
 	}
-	return posts;
-}
-render() {
-	return [
-		<div class="grid-container">
-			<div class="item1">{this.props.user.username}</div>
-			<div class="item2">
-				<img src={lessangry}></img>
-			</div>
-			<div class="item3">FRIENDS: 23</div>
-			<div class="item4">POSTS: {this.state.length}</div>
-			<div class="item5">MESSAGE</div>
-			<div class="item6">FRIEND REQUEST</div>
-		</div>,
-		<div class="profile-feed">{this.generatePosts()}</div>,
-	];
-}
+	render() {
+		return [
+			<div class="grid-container">
+				<div class="item1">{this.props.user.username}</div>
+				<div class="item2">
+					<img src={lessangry}></img>
+				</div>
+				<div class="item3">FRIENDS: 23</div>
+				<div class="item4">POSTS: {this.state.length}</div>
+				<div class="item5">MESSAGE</div>
+				<div class="item6">FRIEND REQUEST</div>
+			</div>,
+			<div class="profile-feed">{this.generatePosts()}</div>,
+		];
+	}
 }
 
 const Profile = compose(
