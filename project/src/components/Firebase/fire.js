@@ -4,7 +4,7 @@ import "firebase/database";
 import "firebase/storage";
 
 // import 'firebase/messaging';
-
+const databaseURL = process.env.REACT_APP_MONGO_URL;
 const config = {
 	apiKey: process.env.REACT_APP_API_KEY,
 	authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -55,17 +55,17 @@ class fire {
 		let refToPath = this.db.ref(`posts/${uid}`);
 		let snap = await refToPath.once("value");
 		let names = Object.keys(snap.val());
-		for (var i = 0; i <names.length;i++){
+		for (var i = 0; i < names.length; i++) {
 			let url = await this.doGrabFile(names[i]);
 			ret.push(url);
-		} 
-	
-		console.log(ret[0])
+		}
+
+		console.log(ret[0]);
 		return ret;
 	};
 
 	doGrabFile = (name) => {
-		const  image= firebase.storage().ref().child(name);
+		const image = firebase.storage().ref().child(name);
 		let testing = image.getDownloadURL();
 		return testing;
 	};
@@ -74,13 +74,29 @@ class fire {
 		var timestamp = new Date();
 		console.log(timestamp);
 		let storeRef = this.storageRef.child(String(timestamp));
+		let id = this.auth.currentUser.uid;
 		var metadata = {
 			customMetadata: {
-				uid: this.auth.currentUser.uid,
+				uid: id,
 			},
 		};
 		// Updating metadata
 		storeRef.put(file, metadata).then(function (snapshot) {
+			// After we uploaded to firebase we will upload to our mongo database to link them!
+			const requestOptions = {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					UID: id,
+					video: String(timestamp),
+					author: id,
+				}),
+			};
+			console.log("ID is " + id);
+			fetch(databaseURL + "/posts", requestOptions)
+				.then((response) => response.json())
+				.then((data) => console.log(data))
+				.catch((err) => console.log(err));
 			console.log("Uploaded a blob or file!");
 		});
 	};
