@@ -12,10 +12,25 @@ export const loginUser = (username)=>({
     }
 });
 
+
 /**
  * Stores the username into the redux store
  * 
- * @param {Number} username
+ * @param {String} url
+ */
+export const saveURL = (url)=>({
+    type: Actions.URL,
+    payload: {
+        url
+    }
+});
+
+
+
+/**
+ * Stores the username into the redux store
+ * 
+ * @param {Number} money
  */
 export const userMoney = (money)=>({
     type: Actions.USER_MONEY,

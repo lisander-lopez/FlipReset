@@ -1,4 +1,5 @@
-import firebase from "firebase/app";
+
+import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 import "firebase/storage";
@@ -50,14 +51,24 @@ class fire {
 		//export const storage = firebase.storage()
 		//export const storageRef = storage.ref();
 	}
+	getVidList = async (uid) => {
+		let ret = [];
+		let refToPath = this.db.ref(`posts/${uid}`);
+		let snap = await refToPath.once("value");
+		let names = Object.keys(snap.val());
+		for (var i = 0; i <names.length;i++){
+			let url = await this.doGrabFile(names[i]);
+			ret.push(url);
+		} 
+	
+		console.log(ret[0])
+		return ret;
+	};
 
-	doGrabFile = () => {
-		const image = firebase.storage().ref().child("upload");
+	doGrabFile = (name) => {
+		const  image= firebase.storage().ref().child(name);
 		let testing = image.getDownloadURL();
-		let ans = testing.then(function (url) {
-			return url;
-		});
-		return ans;
+		return testing;
 	};
 
 	doSubmitFile = (file) => {
@@ -89,16 +100,15 @@ class fire {
 		this.auth.signInWithEmailAndPassword(email, password);
 	/*
 
-   doSignInWithGoogle = () =>
-    this.auth.signInWithPopup(this.googleProvider);
+ doSignInWithGoogle = () =>
+  this.auth.signInWithPopup(this.googleProvider);
 
-  doSignInWithFacebook = () =>
-    this.auth.signInWithPopup(this.facebookProvider);
+doSignInWithFacebook = () =>   this.auth.signInWithPopup(this.facebookProvider);
 
-  doSignInWithTwitter = () =>
-    this.auth.signInWithPopup(this.twitterProvider)
+doSignInWithTwitter = () =>
+  this.auth.signInWithPopup(this.twitterProvider)
 
-  */
+*/
 
 	doSignOut = () => this.auth.signOut();
 
@@ -142,12 +152,12 @@ class fire {
 
 	users = () => this.db.ref("users");
 	/*
-      // *** Message API ***
+    // *** Message API ***
 
-    message = uid => this.db.ref(`messages/${uid}`);
+  message = uid => this.db.ref(`messages/${uid}`);
 
-    messages = () => this.db.ref('messages');
-    */
+  messages = () => this.db.ref('messages');
+  */
 }
 
 export default fire;

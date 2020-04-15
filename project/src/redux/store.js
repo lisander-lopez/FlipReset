@@ -7,7 +7,7 @@ const store = createStore(
     combineReducers({
         user,
         items
-    })
+    }),window.STATE_FROM_SERVER
 );
 
 export default store;

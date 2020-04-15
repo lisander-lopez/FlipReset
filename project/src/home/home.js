@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import $ from "jquery";
 import "./home.css";
-import { connect } from 'react-redux';
-import { compose } from 'recompose';
+
 import {
 	BrowserRouter as Router,
 	Switch,
@@ -14,6 +13,9 @@ import {
 } from "react-router-dom";
 import { withFirebase } from '../components/Firebase/context'
 import ReactPlayer from 'react-player'
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+
 
 const tit = () => (
 	<div>
@@ -51,7 +53,6 @@ class Home extends Component {
 	generatePosts() {
 		console.log(this.props.user.username)
 		let posts = [];
-
 		// Outer loop to create parent
 		for (let i = 0; i < 3; i++) {
 			//Create the parent and add the children
@@ -143,7 +144,6 @@ class Home extends Component {
 		return posts;
 	}
 	render() {
-
 		return <div class="feed">{this.generatePosts()}</div>;
 	}
 }
