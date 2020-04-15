@@ -27,12 +27,18 @@ class FlipPost extends Component {
     super(props);
     this.state = {
       // profilePicSrc: "https://www.speakingtigerbooks.com/wp-content/uploads/2016/09/facebook-default-no-profile-pic.jpg",
-      username: "oldmikeman",
-      // // url: this.props.user.url,
-      // error: null,
+      username: this.props.user.username,
+      url: this.props.user.url,
+      error: null,
       comments: [],
+      likedBy: [],
+      likes: 0,
+      didILike: false,
+      caption: 'This is a posttt',
+
     };
     this.updateCommentList = this.updateCommentList.bind(this);
+    this.handleLike = this.handleLike.bind(this);
   }
 
   updateCommentList(comment) {
@@ -40,9 +46,35 @@ class FlipPost extends Component {
       comments: this.state.comments.concat(comment),
     });
   }
-  //{this.props.user.username} 
+
+  handleLike = event => {
+    event.preventDefault();
+    var likeStatus = false;
+    let i = 0;
+
+    for (i; i < this.state.likedBy.length; i++) {
+      if (this.state.likedBy[i] === this.state.username) {
+        likeStatus = true;
+        break;
+      }
+    }
+
+    this.setState({
+      likedBy: ((likeStatus === false) ?
+        this.state.likedBy.concat(this.state.username) :
+        this.state.likedBy.splice(i, 1)
+      ),
+      likes: ((likeStatus === false) ?
+      this.state.likedBy.length + 1 :
+      this.state.likedBy.length),
+      didILike: likeStatus,
+    });
+  }
+
+  // {this.props.user.username} 
   // url={this.state.url}
 
+/*  */
   render() {
     return (
       <div class="post animated bounceInLeft delay-1s">
@@ -74,19 +106,22 @@ class FlipPost extends Component {
         </div>
         <div class="post-footer">
           <div class="post-social">
-            <i class="las la-heart"></i>
+            <i
+              class={`las la-heart ${this.state.didILike ? "liked" : ""}`}
+              id="like-elem"
+              onClick={this.handleLike}></i>
             <i class="lar la-comment"></i>
           </div>
           <div class="post-divide"></div>
           <div class="post-LB">
             <i class="las la-heart black-heart"></i>
-            <span id="numberOfLikes">4</span> likes
-						</div>
+            <span id="numberOfLikes">{this.state.likes}</span> likes
+					</div>
           <div class="post-status">
             <span class="userName">
               <b>{this.state.username}</b>
             </span>
-            <span>This is a posttt</span>
+            <span>{this.state.caption}</span>
           </div>
           <CommentsContainer
             comments={this.state.comments}
@@ -135,18 +170,18 @@ class CommentsContainer extends Component {
   }
 }
 
-// const PostyMcPostFace = compose(
-//   withRouter,
-//   withFirebase,
-// )(FlipPost);
+const PostyMcPostFace = compose(
+  withRouter,
+  withFirebase,
+)(FlipPost);
 
-// const mapStateToProps = (state) => {
-//   const { user } = state;
-//   return {
-//     user,
-//   }
-// }
+const mapStateToProps = (state) => {
+  const { user } = state;
+  return {
+    user,
+  }
+}
 
-// export default connect(mapStateToProps, null)(PostyMcPostFace);
+export default connect(mapStateToProps, null)(PostyMcPostFace);
 
 export default FlipPost;

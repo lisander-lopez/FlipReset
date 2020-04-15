@@ -25,12 +25,12 @@
 	position: relative;
 }
 
-.post-author > a > img {
+.post-author>a>img {
 	width: 30px;
 	height: 30px;
 }
 
-.post-author > a {
+.post-author>a {
 	display: inline-block;
 }
 
@@ -49,7 +49,7 @@
 	justify-self: end;
 }
 
-.post-settings > a > img {
+.post-settings>a>img {
 	width: 30px;
 	height: 30px;
 }
@@ -67,38 +67,51 @@
 }
 
 /* POST FOOTER CSS */
+
 .post-footer {
 	display: grid;
 	grid-template-rows: 1fr;
 }
+
 .post-social {
 	margin-top: 5px;
 	margin-bottom: -3px;
 }
-.post-social > i.la-heart {
+
+.post-social>i.la-heart {
 	font-size: 32px;
 	color: gray;
 	opacity: 0.2;
 	cursor: pointer;
 	margin-left: 5px;
 	margin-right: 15px;
-
 	transition: all ease-in-out 0.2s;
 }
 
-.post-social > i.la-heart:hover {
+.post-social>i.la-heart:hover {
 	color: #ed4956;
 	opacity: 1;
 }
 
-.post-social > i.la-comment {
+.post-social>i.la-heart:active {
+	color: #e92b3b;
+	opacity: 1;
+}
+
+.post-social>i.la-heart.liked {
+	color: #ed4956;
+	opacity: 1;
+}
+
+.post-social>i.la-comment {
 	font-size: 32px;
 	cursor: pointer;
 	color: gray;
 	transition: all ease-in-out 0.2s;
 	opacity: 0.2;
 }
-.post-social > i.la-comment:hover {
+
+.post-social>i.la-comment:hover {
 	opacity: 1;
 }
 
@@ -135,9 +148,9 @@
 	padding-left: 5%;
 }
 
-.comment{
+.comment {
 	padding-bottom: .5%;
-} 
+}
 
 .username {
 	text-decoration: none;
