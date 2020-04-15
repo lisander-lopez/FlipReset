@@ -38,8 +38,7 @@ class Prof extends Component {
 	componentDidMount() {
 		// console.log(this.props.firebase.auth.currentUser.uid);
 		this.props.firebase.getVidList(
-			this.props.firebase.auth.currentUser.uid
-			
+			this.props.user.uid
 		)
 			.then(result => {
 				this.setState({

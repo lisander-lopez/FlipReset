@@ -25,6 +25,17 @@ export const saveURL = (url)=>({
     }
 });
 
+/**
+ * Stores the username into the redux store
+ * 
+ * @param {Number} uid
+ */
+export const userUID = (uid)=>({
+    type: Actions.UID,
+    payload: {
+        uid
+    }
+});
 
 
 /**
