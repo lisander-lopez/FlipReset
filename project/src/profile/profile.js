@@ -33,14 +33,7 @@ class Prof extends Component {
 			error: null,
 		};
 	}
-	async addVideoURLToPosts(posts) {
-		for (let i = 0; i < posts.length; i++) {
-			let videoURL = await this.props.firebase.doGrabFile(posts[i].video);
-			posts.videoURL = videoURL;
-			console.log("------------------");
-			console.log(posts[i]);
-		}
-	}
+
 	componentDidMount() {
 		this.props.firebase.getUserPosts(this.props.user.uid).then(
 			async (result) => {
@@ -61,24 +54,32 @@ class Prof extends Component {
 	}
 
 	generatePosts() {
-		let posts = this.state.posts;
-		console.log(posts);
-		for (let i = 0; i < this.state.posts.length; i++) {
-			posts.push(
-				<Link to="/chatpro" className="Deeznutsidk" onClick={this.handleSubmit}>
-					<div class="profile-post-content">
-						<div className="player-wrapper">
-							<ReactPlayer
-								className="react-player"
-								url={posts[i].videoURL}
-								width="100%"
-								height="100%"
-							/>
+		let userPosts = this.state.posts;
+		console.log("posts from state", userPosts);
+		let posts = [];
+		if (userPosts) {
+			for (let i = 0; i < this.state.posts.length; i++) {
+				posts.push(
+					<Link
+						to="/chatpro"
+						className="Deeznutsidk"
+						onClick={this.handleSubmit}
+					>
+						<div class="profile-post-content">
+							<div className="player-wrapper">
+								<ReactPlayer
+									className="react-player"
+									url={this.props.firebase.doGrabFile(userPosts[i].video)}
+									width="100%"
+									height="100%"
+								/>
+							</div>
 						</div>
-					</div>
-				</Link>
-			);
+					</Link>
+				);
+			}
 		}
+
 		return posts;
 	}
 	render() {
@@ -93,6 +94,7 @@ class Prof extends Component {
 				<div class="item5">MESSAGE</div>
 				<div class="item6">FRIEND REQUEST</div>
 			</div>,
+
 			<div class="profile-feed">{this.generatePosts()}</div>,
 		];
 	}

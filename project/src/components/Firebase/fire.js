@@ -53,28 +53,34 @@ class fire {
 	// Return list of .mp4 pertaining the user
 	getUserPosts = async (uid) => {
 		console.log(uid);
-		
-		let userDB = await fetch(databaseURL + "user/" + uid); // Get all posts ID associated with User
+
+		let userDB = await fetch(databaseURL + "/user/" + uid); // Get all posts ID associated with User
 		// console.log(userDB.text());
-		
-		let userProf = await userDB.json(); 
+
+		let userProf = await userDB.json();
 		console.log("HERE BITCH");
 		let ret = [];
 
 		console.log(userProf);
-		
+
 		for (let i = 0; i < userProf.posts.length; i++) {
 			console.log(userProf.posts[i]);
-			let post = await (
-				await fetch(databaseURL + "posts/" + userProf.posts[i])
-			).json();
+			let rawPost = await fetch(databaseURL + "/posts/" + userProf.posts[i]);
 
-			let videoURL1 = await this.doGrabFile(post.video);
-			post.videoURL = videoURL1;
-			console.log(post);
-			console.log(post.videoURL);
+			let post = await rawPost.json();
+
+			//let videoURL1 = await this.doGrabFile(post.video);
 			ret.push(post);
 		}
+
+		/*
+		for (var i = 0; i < ret.length; i++) {
+			console.log("ret", ret[i]);
+			let videoURL1 = await this.doGrabFile(ret[i].video);
+			ret[i].videoURL = videoURL1;
+			console.log("ret", ret[i]);
+		}
+		*/
 		return ret;
 
 		/*
@@ -92,9 +98,9 @@ class fire {
 		*/
 	};
 
-	doGrabFile = async (name) => {
+	doGrabFile = (name) => {
 		const image = firebase.storage().ref().child(name);
-		let testing = await image.getDownloadURL();
+		let testing = image.getDownloadURL();
 		return testing;
 	};
 
