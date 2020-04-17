@@ -52,12 +52,21 @@ class fire {
 	}
 	// Return list of .mp4 pertaining the user
 	getUserPosts = async (uid) => {
-		let userProf = await (await fetch(databaseURL + "/user/" + uid)).json(); // Get all posts ID associated with User
+		console.log(uid);
+		
+		let userDB = await fetch(databaseURL + "user/" + uid); // Get all posts ID associated with User
+		// console.log(userDB.text());
+		
+		let userProf = await userDB.json(); 
+		console.log("HERE BITCH");
 		let ret = [];
 
+		console.log(userProf);
+		
 		for (let i = 0; i < userProf.posts.length; i++) {
+			console.log(userProf.posts[i]);
 			let post = await (
-				await fetch(databaseURL + "/posts/" + userProf.posts[i])
+				await fetch(databaseURL + "posts/" + userProf.posts[i])
 			).json();
 
 			let videoURL1 = await this.doGrabFile(post.video);

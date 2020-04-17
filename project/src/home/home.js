@@ -41,6 +41,16 @@ class Home extends Component {
 	}
 
 
+	testMongo() {
+		fetch('http://localhost:3000/posts/5e9746e7f74ad5030d9f7df4')
+			.then(result => {
+				return result.json();
+			})
+			.then(data => {
+				console.log(data);
+			});
+	}
+
 	handleKeyUp() {
 		$(".post-comment").keyup(data => {
 			if (data.target.value !== "") {
@@ -97,7 +107,7 @@ class Home extends Component {
 						</div>
 						<div class="post-status">
 							<span id="userName">
-								<b>Username</b>
+								<b>{this.props.user.username}</b>
 							</span>
 							<span>This is a posttt</span>
 						</div>
@@ -144,7 +154,14 @@ class Home extends Component {
 		return posts;
 	}
 	render() {
-		return <div class="feed">{this.generatePosts()}</div>;
+		return (
+			<div>
+				<div class="feed">
+					{this.generatePosts()}
+					{this.testMongo()}
+				</div>
+			</div>
+		);
 	}
 }
 
