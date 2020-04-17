@@ -15,7 +15,7 @@ import { withFirebase } from "../components/Firebase/context";
 import ReactPlayer from "react-player";
 import { connect } from "react-redux";
 import { compose } from "recompose";
-import { saveURL } from '../redux/actions';
+import { saveURL } from "../redux/actions";
 
 const tit = () => (
 	<div>
@@ -23,52 +23,54 @@ const tit = () => (
 	</div>
 );
 
-
 class Prof extends Component {
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.state = {
-			source: [],
+			posts: [],
 			length: null,
 			error: null,
 		};
 	}
-
+	async addVideoURLToPosts(posts) {
+		for (let i = 0; i < posts.length; i++) {
+			let videoURL = await this.props.firebase.doGrabFile(posts[i].video);
+			posts.videoURL = videoURL;
+			console.log("------------------");
+			console.log(posts[i]);
+		}
+	}
 	componentDidMount() {
-		// console.log(this.props.firebase.auth.currentUser.uid);
-		this.props.firebase.getVidList(
-			this.props.user.uid
-		)
-			.then(result => {
+		this.props.firebase.getUserPosts(this.props.user.uid).then(
+			async (result) => {
 				this.setState({
-					source: result,
-					length: result.length
-				})
+					posts: result,
+				});
 			},
-				error => {
-					console.log(error)
-				})
+			(error) => {
+				console.log(error);
+			}
+		);
 	}
 
 	handleSubmit(e) {
 		console.log(e.target.src);
-		this.props.saveURL(e.target.src)
-		console.log(this.props.user.url)
+		this.props.saveURL(e.target.src);
+		console.log(this.props.user.url);
 	}
 
 	generatePosts() {
-		let posts = [];
-		let views = this.state.source
-		for (let i = 0; i < this.state.length; i++) {
-			console.log(views[i])
+		let posts = this.state.posts;
+		console.log(posts);
+		for (let i = 0; i < this.state.posts.length; i++) {
 			posts.push(
 				<Link to="/chatpro" className="Deeznutsidk" onClick={this.handleSubmit}>
 					<div class="profile-post-content">
 						<div className="player-wrapper">
 							<ReactPlayer
 								className="react-player"
-								url={views[i]}
+								url={posts[i].videoURL}
 								width="100%"
 								height="100%"
 							/>
@@ -96,10 +98,7 @@ class Prof extends Component {
 	}
 }
 
-const Profile = compose(
-	withRouter,
-	withFirebase,
-)(Prof);
+const Profile = compose(withRouter, withFirebase)(Prof);
 
 const mapStateToProps = (state) => {
 	const { user } = state;
@@ -110,6 +109,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
 	saveURL,
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

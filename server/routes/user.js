@@ -12,6 +12,14 @@ router.get("/", async (req, res) => {
 		res.status(400).res({ message: error });
 	}
 });
+router.get("/:id", async (req, res) => {
+	try {
+		const user = await User.findOne({ userID: req.params.id });
+		res.status(200).json(user);
+	} catch (error) {
+		res.status(400).res({ message: error });
+	}
+});
 
 // Insert User
 router.post("/", async (req, res) => {

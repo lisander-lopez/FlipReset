@@ -50,7 +50,25 @@ class fire {
 		//export const storage = firebase.storage()
 		//export const storageRef = storage.ref();
 	}
-	getVidList = async (uid) => {
+	// Return list of .mp4 pertaining the user
+	getUserPosts = async (uid) => {
+		let userProf = await (await fetch(databaseURL + "/user/" + uid)).json(); // Get all posts ID associated with User
+		let ret = [];
+
+		for (let i = 0; i < userProf.posts.length; i++) {
+			let post = await (
+				await fetch(databaseURL + "/posts/" + userProf.posts[i])
+			).json();
+
+			let videoURL1 = await this.doGrabFile(post.video);
+			post.videoURL = videoURL1;
+			console.log(post);
+			console.log(post.videoURL);
+			ret.push(post);
+		}
+		return ret;
+
+		/*
 		let ret = [];
 		let refToPath = this.db.ref(`posts/${uid}`);
 		let snap = await refToPath.once("value");
@@ -62,11 +80,12 @@ class fire {
 
 		console.log(ret[0]);
 		return ret;
+		*/
 	};
 
-	doGrabFile = (name) => {
+	doGrabFile = async (name) => {
 		const image = firebase.storage().ref().child(name);
-		let testing = image.getDownloadURL();
+		let testing = await image.getDownloadURL();
 		return testing;
 	};
 
