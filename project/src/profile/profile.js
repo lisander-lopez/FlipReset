@@ -69,7 +69,7 @@ class Prof extends Component {
 							<div className="player-wrapper">
 								<ReactPlayer
 									className="react-player"
-									url={this.props.firebase.doGrabFile(userPosts[i].video)}
+									url={this.state.posts[i].videoURL}
 									width="100%"
 									height="100%"
 								/>
