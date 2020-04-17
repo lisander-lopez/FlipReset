@@ -31,6 +31,7 @@ class Head extends Component {
 			selectedFile: null,
 			error: null,
 		}
+		this.myFunction = this.myFunction.bind(this);
 	}
 
 	toggleDropDown = event => {
@@ -39,13 +40,19 @@ class Head extends Component {
 	};
 
 
-	onClickHandler = () => {
-		console.log('clicked')
-		var timestamp = Number(new Date());
-		const file = new File([this.state.selectedFile], timestamp)
-		console.log(file)
-		this.props.firebase.doSubmitFile(file)
-	};
+	myFunction() {
+        this.props.firebase.getVidList(this.props.user.uid)
+        window.location.reload(false)
+    }
+
+    onClickHandler = async () => {
+        console.log('clicked')
+        var timestamp = Number(new Date());
+        const file = new File([this.state.selectedFile], timestamp)
+        console.log(file)
+        this.props.firebase.doSubmitFile(file)
+        setTimeout(this.myFunction, 20000);
+    };
 
 	
 

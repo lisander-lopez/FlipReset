@@ -50,18 +50,25 @@ class fire {
 		//export const storage = firebase.storage()
 		//export const storageRef = storage.ref();
 	}
+
+
+
 	getVidList = async (uid) => {
 		let ret = [];
-		let refToPath = this.db.ref(`posts/${uid}`);
-		let snap = await refToPath.once("value");
-		let names = Object.keys(snap.val());
-		for (var i = 0; i <names.length;i++){
-			let url = await this.doGrabFile(names[i]);
-			ret.push(url);
-		} 
-	
-		console.log(ret[0])
-		return ret;
+		let refToPath = await this.db.ref(`posts/${uid}`);
+		refToPath.on("value", async function(snapshot){
+			let names = Object.keys(snapshot.val());
+			console.log(names)
+			for (var i = 0; i <names.length;i++){
+				let url =  await this.doGrabFile(names[i]);
+				
+				ret.push(url);
+			};
+		})
+		//let snap = await refToPath.on("value");
+		
+		
+		
 	};
 
 	doGrabFile = (name) => {
