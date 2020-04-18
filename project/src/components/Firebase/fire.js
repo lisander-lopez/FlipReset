@@ -2,6 +2,9 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 import "firebase/storage";
+import io from "socket.io-client";
+const socket = io('http://localhost:3030');
+
 
 // import 'firebase/messaging';
 const databaseURL = process.env.REACT_APP_MONGO_URL;
@@ -79,7 +82,6 @@ class fire {
 			ret[i].videoURL = await this.doGrabFile(ret[i].video);
 			console.log("ret", ret[i], "video: ", ret[i].video);
 		}
-
 		return ret;
 	};
 	addLike = async (postID) => {
@@ -108,6 +110,7 @@ class fire {
 	};
 
 	doSubmitFile = (file) => {
+		console.log("SUBMITTING FILE...")
 		var timestamp = new Date();
 		console.log(timestamp);
 		let storeRef = this.storageRef.child(String(timestamp));
@@ -118,24 +121,37 @@ class fire {
 			},
 		};
 		// Updating metadata
-		storeRef.put(file, metadata).then(function (snapshot) {
-			// After we uploaded to firebase we will upload to our mongo database to link them!
-			const requestOptions = {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					UID: id,
-					video: String(timestamp),
-					author: id,
-				}),
-			};
-			console.log("ID is " + id);
-			fetch(databaseURL + "/posts", requestOptions)
-				.then((response) => response.json())
-				.then((data) => console.log(data))
-				.catch((err) => console.log(err));
-			console.log("Uploaded a blob or file!");
+		const uploadTask = storeRef.put(file, metadata)
+		uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
+			var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+			console.log(percent + "% DONE");
+			if (percent === 100) {
+				const requestOptions = {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						UID: id,
+						video: String(timestamp),
+						author: id,
+					})
+				}
+				console.log("ID is " + id);
+				fetch(databaseURL + "posts", requestOptions)
+					.then((response) => response.json())
+					.then((data) => console.log(data))
+					.catch((err) => console.log(err));
+				console.log("Uploaded a blob or file!");
+				console.log("UPLOAD COMPLETE, EMITTING...")
+				setTimeout(() => {
+					socket.emit("upload", timestamp)
+				}, 10000);
+
+			}
 		});
+
+
 	};
 
 	doCreateUserWithEmailAndPassword = (email, password) => {
