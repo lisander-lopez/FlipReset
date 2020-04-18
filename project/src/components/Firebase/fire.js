@@ -2,6 +2,9 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 import "firebase/storage";
+import io from "socket.io-client";
+const socket = io('http://localhost:3030');
+
 
 // import 'firebase/messaging';
 
@@ -69,8 +72,9 @@ class fire {
 		let testing = image.getDownloadURL();
 		return testing;
 	};
-
+	
 	doSubmitFile = (file) => {
+		console.log("SUBMITTING FILE...")
 		var timestamp = new Date();
 		console.log(timestamp);
 		let storeRef = this.storageRef.child(String(timestamp));
@@ -80,9 +84,15 @@ class fire {
 			},
 		};
 		// Updating metadata
-		storeRef.put(file, metadata).then(function (snapshot) {
-			console.log("Uploaded a blob or file!");
-		});
+		const uploadTask = storeRef.put(file, metadata)
+		uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function(snapshot) {
+			var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+			console.log(percent + "% DONE");
+			if (percent === 100){
+				console.log("UPLOAD COMPLETE, EMITTING...")
+				socket.emit("upload", timestamp)
+			}
+		  });
 	};
 
 	doCreateUserWithEmailAndPassword = (email, password) => {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, Component } from "react";
 import "./profile.css";
 import lessangry from "./lessangry.png";
 import ChatPro from "./chatpro.js";
@@ -16,6 +16,9 @@ import ReactPlayer from "react-player";
 import { connect } from "react-redux";
 import { compose } from "recompose";
 import { saveURL } from '../redux/actions';
+
+import io from "socket.io-client";
+const socket = io('http://localhost:3030');
 
 const tit = () => (
 	<div>
@@ -36,6 +39,28 @@ class Prof extends Component {
 	}
 
 	componentDidMount() {
+		socket.on("timestamp", timestamp => {
+			const oldlen = this.state.length
+			console.log("RECEIVED EMISSION ACROSS --ALL-- CLIENTS")
+			console.log("OLD LENGTH OF VID ARRAY: " + oldlen)
+			console.log("CALLING GETVIDLIST. RETURNED INFO NOT UPDATED, NEEDS PROMISE/DELAY")
+			this.props.firebase.getVidList(
+				this.props.user.uid
+			)
+				.then(result => {
+					console.log("NEW LENGTH OF VID ARRAY (NEEDS TO BE 1 HIGHER TO SIGNIFY UPDATED DB): " + result.length)
+					this.setState({
+						source: result,
+						length: result.length
+					})
+					console.log("current state:" + this.state)
+				},
+					error => {
+						console.log(error)
+					})
+
+		});
+
 		// console.log(this.props.firebase.auth.currentUser.uid);
 		this.props.firebase.getVidList(
 			this.props.user.uid
