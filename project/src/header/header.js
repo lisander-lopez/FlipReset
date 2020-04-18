@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import fire from '../components/Firebase/index'
 import { withFirebase } from '../components/Firebase/context'
 import { compose } from 'recompose';
+import {loginCount,saveURL} from '../redux/actions'; 
 
 
 const tit = () => (
@@ -28,6 +29,7 @@ class Head extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			source: [],
 			selectedFile: null,
 			error: null,
 		}
@@ -40,9 +42,22 @@ class Head extends Component {
 	};
 
 
-	myFunction() {
-        this.props.firebase.getVidList(this.props.user.uid)
-        window.location.reload(false)
+	async myFunction() {/*
+		await this.props.firebase.getVidList(
+			this.props.user.uid
+		)
+			.then(result => {
+				this.setState({
+					source: result,
+				})
+			console.log(this.state.source.length)
+			this.props.loginCount(this.state.source.length)
+			this.props.saveURL(this.state.source)
+			},
+				error => {
+					console.log(error)
+				})
+				*/
     }
 
     onClickHandler = async () => {
@@ -51,7 +66,8 @@ class Head extends Component {
         const file = new File([this.state.selectedFile], timestamp)
         console.log(file)
         this.props.firebase.doSubmitFile(file)
-        setTimeout(this.myFunction, 20000);
+		setTimeout(this.myFunction, 20000);
+		
     };
 
 	
@@ -117,5 +133,10 @@ const mapStateToProps = (state) => {
 	}
 }
 
+const mapDispatchToProps = {
+	loginCount,
+	saveURL
+  }
 
-export default connect(mapStateToProps, null)(Header);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

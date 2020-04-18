@@ -14,7 +14,7 @@ import "./login.css";
 import { compose } from 'recompose';
 import { withFirebase } from '../components/Firebase/context'
 import { connect } from 'react-redux';
-import { loginUser ,userUID} from '../redux/actions'; 
+import { loginUser ,userUID, loginCount, saveURL} from '../redux/actions'; 
 import { isCompositeComponent } from "react-dom/test-utils";
 
 
@@ -41,17 +41,35 @@ class SignInFormBase extends Component {
 
     }
 
+    
+
     onSubmit = event => {
         const { email, password } = this.state;
 
         this.props.firebase
             .doSignInWithEmailAndPassword(email, password)
-         .then(() => {
+         .then(async() => {
                 this.setState({ ...INITIAL_STATE });
                 this.props.loginUser(email)
                 console.log(this.props.user.username)
                 this.props.userUID(this.props.firebase.auth.currentUser.uid)
                 console.log(this.props.user.uid)
+                /*
+                await this.props.firebase.getVidList(
+                    this.props.user.uid
+                )
+                    .then(result => {
+                        this.setState({
+                            source: result,
+                        })
+                    console.log(this.state.source.length)
+                    this.props.loginCount(this.state.source.length)
+                    this.props.saveURL(this.state.source)
+                    },
+                        error => {
+                            console.log(error)
+                        })
+                        */
                 this.props.history.push('/home');
             })
             .catch(error => {
@@ -125,7 +143,9 @@ const mapStateToProps = (state) => {
   
   const mapDispatchToProps = {
     loginUser,
-    userUID
+    userUID,
+    loginCount,
+    saveURL
   }
   
   export default connect(mapStateToProps, mapDispatchToProps)(SignInForm);

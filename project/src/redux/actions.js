@@ -12,6 +12,19 @@ export const loginUser = (username)=>({
     }
 });
 
+/**
+ * Stores the username into the redux store
+ * 
+ * @param {Number} count
+ */
+export const loginCount = (count)=>({
+    type: Actions.COUNT,
+    payload: {
+        count
+    }
+});
+
+
 
 /**
  * Stores the username into the redux store

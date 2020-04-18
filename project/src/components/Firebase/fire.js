@@ -55,24 +55,35 @@ class fire {
 
 	getVidList = async (uid) => {
 		let ret = [];
-		let refToPath = await this.db.ref(`posts/${uid}`);
-		refToPath.on("value", async function(snapshot){
-			let names = Object.keys(snapshot.val());
-			console.log(names)
-			for (var i = 0; i <names.length;i++){
-				let url =  await this.doGrabFile(names[i]);
-				
+		let refToPath = this.db.ref(`posts/${uid}`);
+		refToPath.on("value", async snap => {
+			console.log(Object.keys(snap.val()))
+			let names = Object.keys(snap.val())
+			console.log(names.length)
+			for (var i = 0; i < names.length; i++) {
+				let url = await this.doGrabFile(names[i]);
+				console.log(url)
 				ret.push(url);
 			};
-		})
-		//let snap = await refToPath.on("value");
+			console.log(ret)
+			return ret;
+		});
 		
-		
-		
+		/*let ret = [];
+		let refToPath = this.db.ref(`posts/${uid}`);
+		let snap = await refToPath.once("value");
+		let names = Object.keys(snap.val());
+		for (var i = 0; i <names.length;i++){
+			let url = await this.doGrabFile(names[i]);
+			ret.push(url);
+		} 
+		console.log(ret[0])
+		return ret;
+		*/
 	};
 
 	doGrabFile = (name) => {
-		const  image= firebase.storage().ref().child(name);
+		const image = firebase.storage().ref().child(name);
 		let testing = image.getDownloadURL();
 		return testing;
 	};

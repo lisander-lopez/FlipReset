@@ -4,7 +4,8 @@ const initialState = {
     username: null,
     url: null,
     money: null,
-    uid: null
+    uid: null,
+    count: null
 }
 
 export default function(state=initialState, action){
@@ -16,6 +17,8 @@ export default function(state=initialState, action){
         case Actions.URL:
             return Object.assign({}, state, {...action.payload});
         case Actions.UID:
+            return Object.assign({}, state, {...action.payload});
+        case Actions.COUNT:
             return Object.assign({}, state, {...action.payload});
         default:
             return state;

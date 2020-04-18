@@ -15,7 +15,7 @@ import { withFirebase } from "../components/Firebase/context";
 import ReactPlayer from "react-player";
 import { connect } from "react-redux";
 import { compose } from "recompose";
-import { saveURL } from '../redux/actions';
+import { saveURL, loginCount } from '../redux/actions';
 
 const tit = () => (
 	<div>
@@ -30,21 +30,22 @@ class Prof extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.state = {
 			source: [],
-			length: null,
-			error: null,
 		};
 	}
 
-	componentDidMount() {
-		// console.log(this.props.firebase.auth.currentUser.uid);
+	
+
+	   componentDidMount() {
 		this.props.firebase.getVidList(
 			this.props.user.uid
-		)
-			.then(result => {
+			)
+		 	.then(result => {
 				this.setState({
 					source: result,
-					length: result.length
 				})
+				console.log(this.state.source.length)
+				this.props.saveURL(this.state.source)
+				this.props.loginCount(this.state.source.length)
 			},
 				error => {
 					console.log(error)
@@ -59,8 +60,8 @@ class Prof extends Component {
 
 	generatePosts() {
 		let posts = [];
-		let views = this.state.source
-		for (let i = 0; i < this.state.length; i++) {
+		let views = this.props.user.url
+		for (let i = 0; i < this.props.user.count; i++) {
 			console.log(views[i])
 			posts.push(
 				<Link to="/chatpro" className="Deeznutsidk" onClick={this.handleSubmit}>
@@ -79,20 +80,28 @@ class Prof extends Component {
 		}
 		return posts;
 	}
+
 	render() {
-		return [
-			<div class="grid-container">
-				<div class="item1">{this.props.user.username}</div>
-				<div class="item2">
-					<img src={lessangry}></img>
-				</div>
-				<div class="item3">FRIENDS: 23</div>
-				<div class="item4">POSTS: {this.state.length}</div>
-				<div class="item5">MESSAGE</div>
-				<div class="item6">FRIEND REQUEST</div>
-			</div>,
-			<div class="profile-feed">{this.generatePosts()}</div>,
-		];
+		const { length } = this.state;
+		if (length !== null) {
+			return [
+				<div class="grid-container">
+					<div class="item1">{this.props.user.username}</div>
+					<div class="item2">
+						<img src={lessangry}></img>
+					</div>
+					<div class="item3">FRIENDS: 23</div>
+					<div class="item4">POSTS: {this.props.user.count}</div>
+					<div class="item5">MESSAGE</div>
+					<div class="item6">FRIEND REQUEST</div>
+				</div>,
+				
+				<div class="profile-feed">{this.generatePosts()}</div>,
+			];
+		} else{ return (
+			<span>Loading posts...</span>
+		  )
+		}
 	}
 }
 
@@ -110,6 +119,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
 	saveURL,
+	loginCount
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
