@@ -32,9 +32,11 @@
     "start": "concurrently 'npm run react' 'npm run server'",
     "react": "react-scripts start",
     "server": "nodemon src/socket/index.js",
+    "data": "nodemon ../server/app.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+    
   },
   "eslintConfig": {
     "extends": "react-app"
