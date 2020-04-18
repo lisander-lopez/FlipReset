@@ -44,20 +44,24 @@ class Prof extends Component {
 			console.log("RECEIVED EMISSION ACROSS --ALL-- CLIENTS")
 			console.log("OLD LENGTH OF VID ARRAY: " + oldlen)
 			console.log("CALLING GETVIDLIST. RETURNED INFO NOT UPDATED, NEEDS PROMISE/DELAY")
-			this.props.firebase.getVidList(
-				this.props.user.uid
-			)
-				.then(result => {
-					console.log("NEW LENGTH OF VID ARRAY (NEEDS TO BE 1 HIGHER TO SIGNIFY UPDATED DB): " + result.length)
-					this.setState({
-						source: result,
-						length: result.length
-					})
-					console.log("current state:" + this.state)
-				},
-					error => {
-						console.log(error)
-					})
+			console.log('LOADING DATA...')
+			setTimeout(() => {
+				this.props.firebase.getVidList(
+					this.props.user.uid
+				)
+					.then(result => {
+						console.log("NEW LENGTH OF VID ARRAY (NEEDS TO BE 1 HIGHER TO SIGNIFY UPDATED DB): " + result.length)
+						this.setState({
+							source: result,
+							length: result.length
+						})
+						console.log("current state:" + this.state)
+					},
+						error => {
+							console.log(error)
+						})
+			  }, 10000);
+
 
 		});
 
