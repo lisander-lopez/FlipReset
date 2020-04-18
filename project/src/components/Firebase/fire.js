@@ -7,7 +7,7 @@ const socket = io('http://localhost:3030');
 
 
 // import 'firebase/messaging';
-
+const databaseURL = process.env.REACT_APP_MONGO_URL;
 const config = {
 	apiKey: process.env.REACT_APP_API_KEY,
 	authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -53,7 +53,25 @@ class fire {
 		//export const storage = firebase.storage()
 		//export const storageRef = storage.ref();
 	}
-	getVidList = async (uid) => {
+	// Return list of .mp4 pertaining the user
+	getUserPosts = async (uid) => {
+		let userProf = await (await fetch(databaseURL + "/user/" + uid)).json(); // Get all posts ID associated with User
+		let ret = [];
+
+		for (let i = 0; i < userProf.posts.length; i++) {
+			let post = await (
+				await fetch(databaseURL + "/posts/" + userProf.posts[i])
+			).json();
+
+			let videoURL1 = await this.doGrabFile(post.video);
+			post.videoURL = videoURL1;
+			console.log(post);
+			console.log(post.videoURL);
+			ret.push(post);
+		}
+		return ret;
+
+		/*
 		let ret = [];
 		let refToPath = this.db.ref(`posts/${uid}`);
 		let snap = await refToPath.once("value");
@@ -65,11 +83,12 @@ class fire {
 
 		console.log(ret[0])
 		return ret;
+		*/
 	};
 
-	doGrabFile = (name) => {
+	doGrabFile = async (name) => {
 		const image = firebase.storage().ref().child(name);
-		let testing = image.getDownloadURL();
+		let testing = await image.getDownloadURL();
 		return testing;
 	};
 
@@ -78,9 +97,10 @@ class fire {
 		var timestamp = new Date();
 		console.log(timestamp);
 		let storeRef = this.storageRef.child(String(timestamp));
+		let id = this.auth.currentUser.uid;
 		var metadata = {
 			customMetadata: {
-				uid: this.auth.currentUser.uid,
+				uid: id,
 			},
 		};
 		// Updating metadata
@@ -89,12 +109,32 @@ class fire {
 			var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
 			console.log(percent + "% DONE");
 			if (percent === 100) {
+				const requestOptions = {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						UID: id,
+						video: String(timestamp),
+						author: id,
+					})
+				}
+				console.log("ID is " + id);
+				fetch(databaseURL + "posts", requestOptions)
+					.then((response) => response.json())
+					.then((data) => console.log(data))
+					.catch((err) => console.log(err));
+				console.log("Uploaded a blob or file!");
 				console.log("UPLOAD COMPLETE, EMITTING...")
 				setTimeout(() => {
 					socket.emit("upload", timestamp)
 				}, 10000);
+
 			}
 		});
+
+
 	};
 
 	doCreateUserWithEmailAndPassword = (email, password) => {
