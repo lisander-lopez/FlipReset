@@ -58,21 +58,21 @@ class fire {
 		let refToPath = this.db.ref(`posts/${uid}`);
 		let snap = await refToPath.once("value");
 		let names = Object.keys(snap.val());
-		for (var i = 0; i <names.length;i++){
+		for (var i = 0; i < names.length; i++) {
 			let url = await this.doGrabFile(names[i]);
 			ret.push(url);
-		} 
-	
+		}
+
 		console.log(ret[0])
 		return ret;
 	};
 
 	doGrabFile = (name) => {
-		const  image= firebase.storage().ref().child(name);
+		const image = firebase.storage().ref().child(name);
 		let testing = image.getDownloadURL();
 		return testing;
 	};
-	
+
 	doSubmitFile = (file) => {
 		console.log("SUBMITTING FILE...")
 		var timestamp = new Date();
@@ -85,14 +85,16 @@ class fire {
 		};
 		// Updating metadata
 		const uploadTask = storeRef.put(file, metadata)
-		uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function(snapshot) {
+		uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
 			var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
 			console.log(percent + "% DONE");
-			if (percent === 100){
+			if (percent === 100) {
 				console.log("UPLOAD COMPLETE, EMITTING...")
-				socket.emit("upload", timestamp)
+				setTimeout(() => {
+					socket.emit("upload", timestamp)
+				}, 10000);
 			}
-		  });
+		});
 	};
 
 	doCreateUserWithEmailAndPassword = (email, password) => {
