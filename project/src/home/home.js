@@ -9,20 +9,18 @@ import {
 	Link,
 	useRouteMatch,
 	withRouter,
-	useParams
+	useParams,
 } from "react-router-dom";
-import { withFirebase } from '../components/Firebase/context'
-import ReactPlayer from 'react-player'
-import { connect } from 'react-redux';
-import { compose } from 'recompose';
-
+import { withFirebase } from "../components/Firebase/context";
+import ReactPlayer from "react-player";
+import { connect } from "react-redux";
+import { compose } from "recompose";
 
 const tit = () => (
 	<div>
 		<Hohoho />
 	</div>
 );
-
 
 class Home extends Component {
 	constructor(props) {
@@ -31,7 +29,7 @@ class Home extends Component {
 			source: null,
 			url: null,
 			error: null,
-		}
+		};
 	}
 
 	async componentDidMount() {
@@ -40,9 +38,8 @@ class Home extends Component {
 		console.log(this.state.source);
 	}
 
-
 	handleKeyUp() {
-		$(".post-comment").keyup(data => {
+		$(".post-comment").keyup((data) => {
 			if (data.target.value !== "") {
 				$(data.target.nextElementSibling).removeClass("disabled");
 			} else {
@@ -51,7 +48,7 @@ class Home extends Component {
 		});
 	}
 	generatePosts() {
-		console.log(this.props.user.username)
+		console.log(this.props.user.username);
 		let posts = [];
 		// Outer loop to create parent
 		for (let i = 0; i < 3; i++) {
@@ -76,12 +73,12 @@ class Home extends Component {
 						</div>
 					</div>
 					<div class="post-content">
-						<div className='player-wrapper'>
+						<div className="player-wrapper">
 							<ReactPlayer
-								className='react-player'
+								className="react-player"
 								url={this.state.source}
-								width='100%'
-								height='100%'
+								width="100%"
+								height="100%"
 							/>
 						</div>
 					</div>
@@ -97,7 +94,7 @@ class Home extends Component {
 						</div>
 						<div class="post-status">
 							<span id="userName">
-								<b>Username</b>
+								<b>{this.props.user.username}</b>
 							</span>
 							<span>This is a posttt</span>
 						</div>
@@ -144,23 +141,21 @@ class Home extends Component {
 		return posts;
 	}
 	render() {
-		return <div class="feed">{this.generatePosts()}</div>;
+		return (
+			<div>
+				<div class="feed">{this.generatePosts()}</div>
+			</div>
+		);
 	}
 }
 
-
-const Hohoho = compose(
-	withRouter,
-	withFirebase,
-)(Home);
-
+const Hohoho = compose(withRouter, withFirebase)(Home);
 
 const mapStateToProps = (state) => {
 	const { user } = state;
 	return {
 		user,
-	}
-}
-
+	};
+};
 
 export default connect(mapStateToProps, null)(Hohoho);

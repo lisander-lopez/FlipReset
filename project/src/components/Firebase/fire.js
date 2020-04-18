@@ -55,41 +55,58 @@ class fire {
 	}
 	// Return list of .mp4 pertaining the user
 	getUserPosts = async (uid) => {
-		let userProf = await (await fetch(databaseURL + "/user/" + uid)).json(); // Get all posts ID associated with User
+		console.log(uid);
+
+		let userDB = await fetch(databaseURL + "/user/" + uid); // Get all posts ID associated with User
+		// console.log(userDB.text());
+
+		let userProf = await userDB.json();
+		console.log("HERE BITCH");
 		let ret = [];
+
+		console.log(userProf);
 
 		for (let i = 0; i < userProf.posts.length; i++) {
-			let post = await (
-				await fetch(databaseURL + "/posts/" + userProf.posts[i])
-			).json();
+			console.log(userProf.posts[i]);
+			let rawPost = await fetch(databaseURL + "/posts/" + userProf.posts[i]);
+			let post = await rawPost.json();
 
-			let videoURL1 = await this.doGrabFile(post.video);
-			post.videoURL = videoURL1;
-			console.log(post);
-			console.log(post.videoURL);
+			//let videoURL1 = await this.doGrabFile(post.video);
 			ret.push(post);
 		}
-		return ret;
 
-		/*
-		let ret = [];
-		let refToPath = this.db.ref(`posts/${uid}`);
-		let snap = await refToPath.once("value");
-		let names = Object.keys(snap.val());
-		for (var i = 0; i < names.length; i++) {
-			let url = await this.doGrabFile(names[i]);
-			ret.push(url);
+		console.log("ret length: ", ret.length);
+		for (var i = 0; i < ret.length; i++) {
+			console.log("ret", ret[i]);
+			// let videoURL1 = await this.doGrabFile(ret[i].video);
+			ret[i].videoURL = await this.doGrabFile(ret[i].video);
+			console.log("ret", ret[i], "video: ", ret[i].video);
 		}
-
-		console.log(ret[0])
 		return ret;
-		*/
+	};
+	addLike = async (postID) => {
+		await fetch(databaseURL + "/posts/addLike/" + postID);
+	};
+	postComment = async (com, id) => {
+		console.log("text to be uploaded", com);
+		// Post comment
+		const requestOptions = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				UID: this.auth.currentUser.uid,
+				text: com,
+			}),
+		};
+		fetch(databaseURL + "/posts/comment/" + id, requestOptions)
+			.then((response) => response.json())
+			.then((data) => console.log(data))
+			.catch((err) => console.log(err));
 	};
 
-	doGrabFile = async (name) => {
+	doGrabFile = (name) => {
 		const image = firebase.storage().ref().child(name);
-		let testing = await image.getDownloadURL();
-		return testing;
+		return image.getDownloadURL();
 	};
 
 	doSubmitFile = (file) => {
