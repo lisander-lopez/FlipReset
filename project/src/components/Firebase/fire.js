@@ -54,7 +54,7 @@ class fire {
 	getUserPosts = async (uid) => {
 		console.log(uid);
 
-		let userDB = await fetch(databaseURL + "user/" + uid); // Get all posts ID associated with User
+		let userDB = await fetch(databaseURL + "/user/" + uid); // Get all posts ID associated with User
 		// console.log(userDB.text());
 
 		let userProf = await userDB.json();
@@ -65,13 +65,13 @@ class fire {
 
 		for (let i = 0; i < userProf.posts.length; i++) {
 			console.log(userProf.posts[i]);
-			let rawPost = await fetch(databaseURL + "	posts/" + userProf.posts[i]);
+			let rawPost = await fetch(databaseURL + "/posts/" + userProf.posts[i]);
 			let post = await rawPost.json();
 
 			//let videoURL1 = await this.doGrabFile(post.video);
 			ret.push(post);
 		}
-		
+
 		console.log("ret length: ", ret.length);
 		for (var i = 0; i < ret.length; i++) {
 			console.log("ret", ret[i]);
@@ -81,20 +81,25 @@ class fire {
 		}
 
 		return ret;
-
-		/*
-		let ret = [];
-		let refToPath = this.db.ref(`posts/${uid}`);
-		let snap = await refToPath.once("value");
-		let names = Object.keys(snap.val());
-		for (var i = 0; i < names.length; i++) {
-			let url = await this.doGrabFile(names[i]);
-			ret.push(url);
-		}
-
-		console.log(ret[0]);
-		return ret;
-		*/
+	};
+	addLike = async (postID) => {
+		await fetch(databaseURL + "/posts/addLike/" + postID);
+	};
+	postComment = async (com, id) => {
+		console.log("text to be uploaded", com);
+		// Post comment
+		const requestOptions = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				UID: this.auth.currentUser.uid,
+				text: com,
+			}),
+		};
+		fetch(databaseURL + "/posts/comment/" + id, requestOptions)
+			.then((response) => response.json())
+			.then((data) => console.log(data))
+			.catch((err) => console.log(err));
 	};
 
 	doGrabFile = (name) => {

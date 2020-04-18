@@ -60,10 +60,16 @@ class Prof extends Component {
 		if (userPosts) {
 			for (let i = 0; i < this.state.posts.length; i++) {
 				posts.push(
-					<Link
+					/*<Link
 						to="/chatpro"
 						className="Deeznutsidk"
 						onClick={this.handleSubmit}
+					>*/
+					<Link
+						to={{
+							pathname: "/chatpro",
+							state: { post: this.state.posts[i] },
+						}}
 					>
 						<div class="profile-post-content">
 							<div className="player-wrapper">
