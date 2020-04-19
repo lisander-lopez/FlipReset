@@ -19,17 +19,6 @@ const config = {
 	measurementId: process.env.REACT_APP_MEASUREMENTID,
 };
 
-// const config = {
-//   apiKey: "AIzaSyAHkDGeM9tCKCIYyJ0pKL13fE-ICudCZ3M",
-//   authDomain: "test1-cf3a2.firebaseapp.com",
-//   databaseURL: "https://test1-cf3a2.firebaseio.com/",
-//   projectId: "test1-cf3a2",
-//   storageBucket: "test1-cf3a2.appspot.com",
-//   messagingSenderId: "521660089302",
-//   appId: "1:521660089302:web:b3a43bb3b0da115aa21a77",
-//   measurementId: "G-CZ9SCS5DQK"
-// };
-
 class fire {
 	constructor() {
 		//console.log(process.env);
@@ -90,7 +79,7 @@ class fire {
 		console.log("EMITTING FOR LIKE");
 		setTimeout(() => {
 			socket.emit("like", timestamp)
-		}, 10000);
+		}, 500);
 	};
 
 	getLikes = async (postID) => {
@@ -118,7 +107,7 @@ class fire {
 		console.log("EMITTING FOR COMMENT");
 		setTimeout(() => {
 			socket.emit("comment", timestamp)
-		}, 10000);
+		}, 500);
 	};
 
 	getComments = async (postID) => {
@@ -169,7 +158,7 @@ class fire {
 				console.log("UPLOAD COMPLETE, EMITTING...")
 				setTimeout(() => {
 					socket.emit("upload", timestamp)
-				}, 10000);
+				}, 4000);
 
 			}
 		});

@@ -1,7 +1,7 @@
-version: '2'
+version: '3'
 services:
   server: 
-    build: ./serv
+    build: ./server
     ports: 
       - "3060:3060"
     environment:
@@ -22,3 +22,5 @@ services:
       - "REACT_APP_APPID=1:521660089302:web:b3a43bb3b0da115aa21a77"
       - "REACT_APP_MEASUREMENTID=G-CZ9SCS5DQK"
       - "REACT_APP_CONFIRMATION_EMAIL_REDIRECT=http://localhost:3000/"
+      - "DB_CONNECTION=mongodb://flipreset:flipreset123@ds049288.mlab.com:49288/flipreset"
+      - "REACT_APP_MONGO_URL=http://localhost:3060/"
