@@ -6,7 +6,7 @@ RUN apt-get install -y npm
 
 COPY . .
 
-WORKDIR /flip-reset
+WORKDIR /
 RUN npm install -g npm
 RUN npm install
 RUN npm run build
