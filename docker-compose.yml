@@ -1,8 +1,9 @@
 version: '2'
 services:
   web:
-    build: .
+    build: ./project
     ports:
       - "3000:3000"
+      - "3001:3001"
   redis:
     image: "flipreset:latest"
