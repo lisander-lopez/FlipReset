@@ -75,6 +75,17 @@ router.get("/addLike/:id", async (req, res) => {
 	}
 });
 
+router.get("/getLikes/:id", async (req, res) => {
+	try {
+		const post = await Post.findById(req.params.id);
+		const likes = post.likes;
+
+		res.status(200).json(likes);
+	} catch (error) {
+		res.status(400).json({ message: error });
+	}
+});
+
 // Add comment to postID
 router.post("/comment/:id", async (req, res) => {
 	try {
@@ -91,4 +102,17 @@ router.post("/comment/:id", async (req, res) => {
 		res.status(400).json({ message: error });
 	}
 });
+
+// Get comments from postID
+router.get("/comment/:id", async (req, res) => {
+	try {
+		const post = await Post.findById(req.params.id);
+		const comments = post.comments;
+
+		res.status(200).json(comments);
+	} catch (error) {
+		res.status(400).json({ message: error });
+	}
+});
+
 module.exports = router;

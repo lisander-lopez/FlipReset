@@ -11,6 +11,18 @@ io.on('connection', socket=> {
             text: timestamp,
         })
     })
+    socket.on("comment", timestamp => {
+        console.log("UPLOADED COMMENT, EMITTING....")
+        io.emit("timestamp", {
+            text: timestamp,
+        })
+    })
+    socket.on("like", timestamp => {
+        console.log("LIKED POST, EMITTING....")
+        io.emit("timestamp", {
+            text: timestamp,
+        })
+    })
 })
 
 app.listen (PORT, ()=>{

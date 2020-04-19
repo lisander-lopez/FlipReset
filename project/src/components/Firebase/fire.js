@@ -61,7 +61,6 @@ class fire {
 		// console.log(userDB.text());
 
 		let userProf = await userDB.json();
-		console.log("HERE BITCH");
 		let ret = [];
 
 		console.log(userProf);
@@ -84,11 +83,25 @@ class fire {
 		}
 		return ret;
 	};
+
 	addLike = async (postID) => {
+		var timestamp = new Date();
 		await fetch(databaseURL + "posts/addLike/" + postID);
+		console.log("EMITTING FOR LIKE");
+		setTimeout(() => {
+			socket.emit("like", timestamp)
+		}, 10000);
 	};
+
+	getLikes = async (postID) => {
+		let likesDB = await fetch(databaseURL + "posts/getLikes/" + postID);
+		let postLikes = await likesDB.json();
+		return (postLikes);
+	}
+
 	postComment = async (com, id) => {
 		console.log("text to be uploaded", com);
+		var timestamp = new Date();
 		// Post comment
 		const requestOptions = {
 			method: "POST",
@@ -102,7 +115,17 @@ class fire {
 			.then((response) => response.json())
 			.then((data) => console.log(data))
 			.catch((err) => console.log(err));
+		console.log("EMITTING FOR COMMENT");
+		setTimeout(() => {
+			socket.emit("comment", timestamp)
+		}, 10000);
 	};
+
+	getComments = async (postID) => {
+		let commentsDB = await fetch(databaseURL + "posts/comment/" + postID); // Get all comments associated with postID
+		let postComments = await commentsDB.json();
+		return (postComments);
+	}
 
 	doGrabFile = (name) => {
 		const image = firebase.storage().ref().child(name);

@@ -16,6 +16,9 @@ import ReactPlayer from "react-player";
 import { connect } from "react-redux";
 import { compose } from "recompose";
 
+import io from "socket.io-client";
+const socket = io('http://localhost:3030');
+
 const tit = () => (
 	<div>
 		<Chat />
@@ -28,6 +31,8 @@ class ChatPro extends Component {
 		this.state = {
 			url: this.props.user.url,
 			error: null,
+			comments: [],
+			likes: 0,
 		};
 		this.handleCommentSubmit = this.handleCommentSubmit.bind(this);
 		this.handleLikePost = this.handleLikePost.bind(this);
@@ -41,21 +46,28 @@ class ChatPro extends Component {
 			}
 		});
 	}
+
 	generateComments() {
-		let post = this.props.history.location.state.post;
+		let postComments = this.state.comments;
 		let comments = [];
-		console.log("Sdafa", post);
-		for (var i = 0; i < post.comments.length; i++) {
-			console.log("Comment", post.comments[i]);
-			comments.push(
-				<li class="comment">
-					<span class="username">{post.comments[i].from}</span>
-					<span class="comment-text">{post.comments[i].content}</span>
-				</li>
-			);
+		console.log("Post Comments: ", postComments);
+		if (postComments) {
+			for (var i = 0; i < postComments.length; i++) {
+				comments.push(
+					<li class="comment">
+						<span class="username">{postComments[i].from}</span>
+						<span class="comment-text">{postComments[i].content}</span>
+					</li>
+				);
+			}
 		}
 		return comments;
 	}
+
+	// generateLikes(){
+	// 	let postLikes = this.state.likes;
+		
+	// }
 
 	async handleLikePost(e) {
 		let postID = $(e.currentTarget).attr("value");
@@ -76,12 +88,55 @@ class ChatPro extends Component {
 			console.log("UPLOADED COMMENT!");
 		}
 	}
+
 	componentDidMount() {
-		console.log("HA", this.props.history.location.state.post);
+		socket.on("timestamp", timestamp => {
+			console.log("TIMESTAMP HIT! Getting likes and comments...")
+			this.props.firebase.getComments(this.props.history.location.state.post._id)
+				.then(result => {
+					console.log("LENGTH OF COMMENTS LIST FOR POST: " + result.length);
+					this.setState({
+						post: this.props.history.location.state.post,
+						comments: result,
+					});
+				},
+					error => {
+						console.log(error);
+					});
+			this.props.firebase.getLikes(this.props.history.location.state.post._id)
+				.then(result => {
+					this.setState({
+						likes: result,
+					});
+				}, error => {
+					console.log(error);
+				});
+		});
+		console.log("State not from timer: ", this.props.history.location.state.post);
+		this.props.firebase.getComments(this.props.history.location.state.post._id).then(
+			async result => {
+				console.log("LENGTH OF COMMENTS LIST FOR POST: " + result.length);
+				this.setState({
+					post: this.props.history.location.state.post,
+					comments: result
+				});
+			},
+			error => {
+				console.log(error)
+			});
+		this.props.firebase.getLikes(this.props.history.location.state.post._id).then(
+			async result => {
+				this.setState({
+					likes: result,
+				});
+			}, error => {
+				console.log(error);
+			});
 		this.setState({
 			post: this.props.history.location.state.post,
 		});
 	}
+
 	render() {
 		let statePassedIn = this.props.history.location.state.post;
 		console.log("statepassed", statePassedIn);
@@ -127,7 +182,7 @@ class ChatPro extends Component {
 						<div class="post-divide"></div>
 						<div class="post-LB">
 							<i class="las la-heart black-heart"></i>
-							<span id="numberOfLikes">{statePassedIn.likes}</span> likes
+							<span id="numberOfLikes">{this.state.likes}</span> likes
 						</div>
 						<div class="post-status">
 							<span id="userName">
