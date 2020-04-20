@@ -1,0 +1,35 @@
+Mongo Database
+	What does this technology (library/framework/service) accomplish for you?
+		Mongo allows us to store things in it, to enable data to be persistant across
+		different instances of the application.
+	How does this technology accomplish what it does?
+		Instead of the conventional tables and columns in SQL styled databases.
+		Mongo is based on NoSQL, using a document store model. This allows easy
+		extraction and insertion with JSON Styled data. Data Objects are stored inside 
+		collections in seperate documents. We used the online service MLABS that allow
+		us to host the database virtually instead of locally. This allows all the developers
+		to work off of one insance of the DB remoteley and have the same data.
+	What license(s) or terms of service apply to this technology?
+		MongoDB, Inc.’s Server Side Public License (for all versions released after October 16, 2018, including patch fixes for prior versions).
+		Link: https://www.mongodb.com/licensing/server-side-public-license
+
+		Terms of Service for MLabs https://mlab.com/company/legal/tos/
+Node.JS
+	What does this technology (library/framework/service) accomplish for you?
+		Node is an event based framework thats uses Google's V8 JavaScript Engine. It allows applications to be programmed in Javacscript.
+	How does this technology accomplish what it does?
+		It uses a single threaded event loops instead of the traditional Multi-threaded archetecture. This allows for more concurrent clients and uses
+		less threads. 
+	What license(s) or terms of service apply to this technology?
+		NodeJS License https://raw.githubusercontent.com/nodejs/node/master/LICENSE
+Express
+	What does this technology (library/framework/service) accomplish for you?
+		This framework allows for a basic http server to be created. It handles all connections and
+		parses all http requests for us.
+	How does this technology accomplish what it does?
+		It starts by listening on the TCP connection for an HTTP Request and then routes that request
+		to the given function depending on the path. It figures this out by parsing the headers to know if it's
+		a post or get request. It uses this code to parse that https://github.com/expressjs/express/blob/master/lib/router/index.js
+
+	What license(s) or terms of service apply to this technology?
+		License for Express library https://github.com/expressjs/express/blob/master/LICENSE
