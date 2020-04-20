@@ -167,6 +167,10 @@ class ChatPro extends Component {
 								url={statePassedIn.videoURL}
 								width="100%"
 								height="100%"
+								playing
+								config={{ file: { attributes: {
+									autoPlay: true,
+								  }}}}
 							/>
 						</div>
 					</div>
