@@ -1,3 +1,46 @@
+Socketio
+What is Socket.io?
+  Enables real-time bidirectional event-based communication. 
+What is Socket.io doing for us?
+  Allows for real-time updating of webpage elements.
+  Used to notify the server when posts/comments/likes are made.
+How does Socket.io accomplish these tasks?
+  When a post is created or liked/commented on, a signal is emitted from
+  the client to the server. (socket.emit)
+  https://socket.io/docs/client-api/#socket-emit-eventName-%E2%80%A6args-ack
+  https://github.com/socketio/socket.io/blob/master/lib/socket.js#L140
+  When the server recieves this signal, it broadcasts a signal to all 
+  currently connected clients. (socket.on) (socket.emit)
+  https://socket.io/docs/server-api/#socket-emit-eventName-%E2%80%A6args-ack
+  https://github.com/socketio/socket.io/blob/master/lib/socket.js#L320
+  When a client recieves this signal from the server, the data of the element
+  that was updated is reloaded on all clients. (socket.on)
+  https://socket.io/docs/server-api/#socket-on-eventName-callback
+Socket.io license:
+  https://github.com/socketio/socket.io/blob/master/LICENSE
+  (The MIT License)
+
+  Copyright (c) 2014-2018 Automattic <dev@cloudup.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining
+  a copy of this software and associated documentation files (the
+  'Software'), to deal in the Software without restriction, including
+  without limitation the rights to use, copy, modify, merge, publish,
+  distribute, sublicense, and/or sell copies of the Software, and to
+  permit persons to whom the Software is furnished to do so, subject to
+  the following conditions:
+
+  The above copyright notice and this permission notice shall be
+  included in all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+  CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 What is JQuery?
 	JQuery is a JavaScript library that provides a fast and efficient way to use JavaScript. JQuery exposes various APIs that
 	allow for easy DOM traversal and manipulation. It makes various JavaScript functionalities easier for us to use.
