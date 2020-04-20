@@ -60,27 +60,28 @@ JQuery License:
 	You are free to use the Project in any other project (even commercial projects) as long as the copyright header is left intact.
 
 What is React JS?
-
-    React Javascript is a front end library that comes with many built in features for creating stateful, 
-dynamic web apps. Its main feature is using whats called JSX, which is essentially javascript that returns 
-both normal HTML elements as well as user defined HTML elements. These user defined HTML elements are 
-called components. Everything in React is defined as a component. These components also act like classes, 
-having constructors for their initial state and component-specific helper functions. 
+  React JS is a component based declarative front end library, where each component acts as a class with properties, state and 
+  class methods. Each component can manage its own state and be interwoven for a complete, modular UI. React can also be rendered on
+  a server with node. 
 
 What is React doing for us?
-
-    React JS also comes with a built in development server through npm. Although we do not make use this dev 
-server, we do make use of the npm "build" script. This creates a production build of the react code through webpack. Both npm and webpack will have a segment further down. We also make use of Reacts ability to easily 
-make asynchronous javascript calls to wherever we need it to.
+  React is rendering our front end components, keeping track of their local state and its varying changes over time and taking care
+  of our event handling.
 
 How does React accomplish these tasks?
+  The React library uses JSX to take HTML templating to the extreme, allowing for creation of custom front end components that look, feel 
+  and behave like like html elements. Each react component is an ES6 class has a state, props, a constructor and class methods. The state, 
+  which is designed in the constructor for a component, keeps tabs on all of the elements of the component which can change over time, and 
+  when the user calls the function setState() from one of their helper functions, React will asynchronously rerender the parts of the page 
+  that contain the state being updated. The helper functions can set the state based on user input or API calls.
+  https://reactjs.org/docs/react-component.html
+  
+  React handles events by taking in the actual handler of a function as opposed to a string that has its name. It also uses something 
+  called a SyntheticEvent in most cases React; events cannot return false to prevent default behavior, it must explicitly use a method called 
+  preventDefault().
+  https://reactjs.org/docs/handling-events.html
+  https://reactjs.org/docs/events.html
 
-    The way that React makes asynchronous calls is through statefulness and user defined helper functions.
-The state, which is designed in the constructor for a component, keeps tabs on all of the elements of the
-component which can change over time, and when the user calls the function setState() from one of their 
-helper functions, React will asynchronously rerender the parts of the page that contain the state being 
-updated. The helper functions can set the state based on user input or API calls, hence the statement that
-the asynchronous calls can be made to wherever we need them to be made from.
 
 React JS License:
 
@@ -118,7 +119,7 @@ React JS Libraries and depenecy functionality:
 
     - What does it solve?
       - Webpack doesn't solve a specific problem from class for us, but it creates a 
-        viable entry point for our golang back end to grab from, and allows us to have
+        viable entry point for our back end to grab from, and allows us to have
         the full functionality of React.
 
     - How does it do this?
@@ -128,40 +129,29 @@ React JS Libraries and depenecy functionality:
     - License:
       - Webpack is MIT Licensed. https://webpack.js.org/license/
 
-    
-    npm, build: 
-    - What is it?      
-      - npm, or node package manager, is a node.js package that allows for a local repository
-        to be stored. But for FlipReset, we make use of one specific thing. The build scripts.
-        These scripts, run by the command "npm run build" will take all of our react code, and 
-        uses webpack to create the vanilla files in a build directory, making them static.
-
-    - What does it solve?
-      - See webpack js
-
-    - How does it do this?
-      - See webpack js
-
-    - License:
-      - npm is MIT licensed.
-
-
     React Router DOM:
-
     - What is it?
       - React Router DOM is a front end routing library for react in order to have react webapps
         that are more than one page.
 
     - What does it solve?
-      - From class, we had to make a relatively complicated structure on the back end that will 
+      - In class, we had to make a relatively complicated structure on the back end that will 
         decide if/when/where to serve data. This library cleans that up by just creating a 
         component to decide what page to render based on the URL path.
 
     - How does it solve this?
-      - React Router DOM does pseudo routing; it doesn't really render new pages. The <Router> 
-        component takes in a series of <Route> components, which contain a component to render
-        and a URL path, and then will simply render the element that is inside of the <Route>
-        that matches the path.
+      - React Router DOM does pseudo routing; it doesn't really render new pages. The <Router>
+        and the <Switch> component takes in a series of <Route> components, which contain a 
+        component to render and a URL path, and then will simply render the element that is inside 
+        of the <Route> that matches the path.
+        https://reacttraining.com/react-router/web/api/Route
+        https://reacttraining.com/react-router/web/api/Router
+        https://reacttraining.com/react-router/web/api/Switch
+        
+        The <Link> component is a more direct version of the <Router> component, and just renders
+        exactly the component specified in the <Link> tag.
+        https://reacttraining.com/react-router/web/api/Link
+
 
     - License:
       - React Router DOM is MIT Licensed, as per https://github.com/ReactTraining/react-router/blob/master/LICENSE
