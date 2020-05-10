@@ -82,6 +82,14 @@ nav {
 	position: relative;
 }
 
+.nav-text2 {
+	font-family: "Charm", cursive;
+	font-weight: 100;
+	font-size: 20px;
+	text-align: center;
+	position: relative;
+}
+
 /* UPLOAD CSS */
 
 #uploadForm {

@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 });
 //Connect to DB
 mongoose.connect(
-	process.env.DB_CONNECTION,
+	"mongodb://flipreset:flipreset123@ds049288.mlab.com:49288/flipreset",
 	{ useNewUrlParser: true, useUnifiedTopology: true },
 	() => {
 		console.log("Connected to the database!");

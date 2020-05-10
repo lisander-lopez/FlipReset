@@ -8,13 +8,12 @@ import {
 	Link,
 	useRouteMatch,
 	withRouter,
-	useParams
+	useParams,
 } from "react-router-dom";
-import { connect } from 'react-redux';
-import fire from '../components/Firebase/index'
-import { withFirebase } from '../components/Firebase/context'
-import { compose } from 'recompose';
-
+import { connect } from "react-redux";
+import fire from "../components/Firebase/index";
+import { withFirebase } from "../components/Firebase/context";
+import { compose } from "recompose";
 
 const tit = () => (
 	<div>
@@ -22,41 +21,35 @@ const tit = () => (
 	</div>
 );
 
-
-
 class Head extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			selectedFile: null,
 			error: null,
-		}
+		};
 	}
 
-	toggleDropDown = event => {
+	toggleDropDown = (event) => {
 		event.preventDefault();
 		$("#dropdownMenu").toggle("show");
 	};
 
-
 	onClickHandler = () => {
-		console.log('clicked')
+		console.log("clicked");
 		var timestamp = Number(new Date());
-		const file = new File([this.state.selectedFile], timestamp)
-		console.log(file)
-		this.props.firebase.doSubmitFile(file)
+		const file = new File([this.state.selectedFile], timestamp);
+		console.log(file);
+		this.props.firebase.doSubmitFile(file);
 	};
 
-	
-
-
-	onChangeHandler = event => {
-		console.log('changed')
+	onChangeHandler = (event) => {
+		console.log("changed");
 		this.setState({
 			selectedFile: event.target.files[0],
 			loaded: 0,
-		})
-	}
+		});
+	};
 
 	render() {
 		return (
@@ -68,11 +61,19 @@ class Head extends Component {
 								<i class="las la-video"></i>
 							</a>
 							<div id="dropdownMenu" class="dropdown-content">
-								<input id="uploadForm" type="file" name="file" onChange={this.onChangeHandler} />
+								<input
+									id="uploadForm"
+									type="file"
+									name="file"
+									onChange={this.onChangeHandler}
+								/>
 								<p>Drag files here?</p>
-								<button type="button"
+								<button
+									type="button"
 									class="btn btn-success btn-block"
-									onClick={this.onClickHandler}>Upload
+									onClick={this.onClickHandler}
+								>
+									Upload
 								</button>
 							</div>
 						</div>
@@ -80,6 +81,9 @@ class Head extends Component {
 					<div class="nav-col-2">
 						<div class="nav-text">
 							<Link to="/home">FlipReset</Link>
+						</div>
+						<div class="nav-text2">
+							<Link to="/search">Search</Link>
 						</div>
 					</div>
 					<div class="nav-col-3">
@@ -98,17 +102,13 @@ class Head extends Component {
 	}
 }
 
-const Header = compose(
-	withRouter,
-	withFirebase,
-)(Head);
+const Header = compose(withRouter, withFirebase)(Head);
 
 const mapStateToProps = (state) => {
 	const { user } = state;
 	return {
 		user,
-	}
-}
-
+	};
+};
 
 export default connect(mapStateToProps, null)(Header);
