@@ -2,6 +2,7 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 import "firebase/storage";
+import axios from "axios";
 import io from "socket.io-client";
 const socket = io("http://localhost:3030");
 
@@ -18,7 +19,7 @@ const config = {
 	measurementId: process.env.REACT_APP_MEASUREMENTID,
 };
 
-class fire {
+class fire{
 	constructor() {
 		//console.log(process.env);
 		firebase.initializeApp(config);
@@ -41,6 +42,29 @@ class fire {
 		//export const storage = firebase.storage()
 		//export const storageRef = storage.ref();
 	}
+
+	// Return list of .mp4 pertaining the user
+	getAllPosts = async () => {
+
+		let r = await axios.get(databaseURL + "posts/");
+		console.log(r);
+		let ret = [];
+		for (let i = 0; i < r.data.length; i++) {
+			// console.log(r.data[i])
+			ret.push(r.data[i]);
+		}
+
+		console.log("ret length: ", ret.length);
+		for (var i = 0; i < ret.length; i++) {
+			console.log("ret", ret[i]);
+			ret[i].videoURL = await this.doGrabFile(ret[i].video);
+			console.log("ret", ret[i], "video: ", ret[i].video);
+		}
+		return ret;
+	};
+
+
+
 	// Return list of .mp4 pertaining the user
 	getUserPosts = async (uid) => {
 		console.log(uid);
@@ -51,13 +75,13 @@ class fire {
 		let userProf = await userDB.json();
 		let ret = [];
 
-		console.log(userProf);
+		console.log("userprof", userProf);
 
 		for (let i = 0; i < userProf.posts.length; i++) {
-			console.log(userProf.posts[i]);
+			console.log("userprof.posts", userProf.posts[i]);
 			let rawPost = await fetch(databaseURL + "posts/" + userProf.posts[i]);
 			let post = await rawPost.json();
-
+			console.log("postall", post);
 			//let videoURL1 = await this.doGrabFile(post.video);
 			ret.push(post);
 		}
@@ -71,6 +95,7 @@ class fire {
 		}
 		return ret;
 	};
+
 
 	addLike = async (postID) => {
 		var timestamp = new Date();
@@ -160,7 +185,7 @@ class fire {
 					body: JSON.stringify({
 						UID: id,
 						video: String(timestamp),
-						author: id,
+						author: 'donelater',
 					}),
 				};
 				console.log("ID is " + id);

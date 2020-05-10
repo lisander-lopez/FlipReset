@@ -71,6 +71,7 @@ class ChatPro extends Component {
 
 	async handleLikePost(e) {
 		let postID = $(e.currentTarget).attr("value");
+		console.log(postID);
 		$(e.currentTarget).addClass("active");
 		await this.props.firebase.addLike(postID);
 		console.log("Liked!");
