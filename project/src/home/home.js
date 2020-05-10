@@ -36,8 +36,20 @@ class Home extends Component {
 		};
 		// this.handleLikePost = this.handleLikePost.bind(this);
 	}
-
-	componentDidMount() {
+	allUsersUID = async () => {
+		console.log(this.props.user.uid);
+		fetch(process.env.REACT_APP_MONGO_URL + "user/all/" + this.props.user.uid)
+			.then((res) => res.json())
+			.then((data) => {
+				let json = data;
+				this.setState({ json });
+				console.log(json);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+	async componentDidMount() {
 		// const response = await this.props.firebase.doGrabFile();
 		// this.setState({ source: response });
 		// console.log(this.state.source);
@@ -70,11 +82,13 @@ class Home extends Component {
 			},
 			(error) => {
 				console.log(error);
-			}
-		);
-		
-		
-		
+			});
+		let d = await this.allUsersUID();
+		return Promise.resolve();
+
+
+
+
 
 	}
 
@@ -95,45 +109,76 @@ class Home extends Component {
 		console.log(this.props.user.username);
 		let userPosts = this.state.posts;
 		console.log("posts from state", userPosts);
+		console.log("JSON", this.state.json);
 		let posts = [];
+		let flag = false;
 		// Outer loop to create parent
-		for (let i = 0; i < this.state.posts.length; i++) {
-			//Create the parent and add the children
-			
-			posts.push(
-				<div class="post animated bounceInLeft delay-1s">
-					<div class="post-header">
-						<div class="post-author">
-							<a href="#">
-								<img
-									src="https://www.speakingtigerbooks.com/wp-content/uploads/2016/09/facebook-default-no-profile-pic.jpg"
-									alt="Author Picture"
-									srcset=""
-								/>
-							</a>
-							<p class="post-name">{this.state.posts[i].author}</p>
+		let friends = [];
+		if (this.state.json) {
+			for (let i = 0; i < this.state.json.length; i++) {
+				if (this.state.json[i].isFollowing === true) {
+					friends.push(
+						this.state.json[i].displayName
+					);
+				}
+			}
+
+			console.log("MYFRIENDS", friends);
+
+			for (let i = 0; i < this.state.posts.length; i++) {
+				//Create the parent and add the children
+				let curr = this.state.json[i];
+				for (let j = 0; j < friends.length; j++) {
+					if (friends[j] === this.state.posts[i].author) {
+						flag = true;
+						console.log("friend === author");
+					}
+				}
+				if (flag === true) {
+					posts.push(
+						<div class="post animated bounceInLeft delay-1s">
+							<div class="post-header">
+								<div class="post-author">
+									<a href="#">
+										<img
+											src="https://www.speakingtigerbooks.com/wp-content/uploads/2016/09/facebook-default-no-profile-pic.jpg"
+											alt="Author Picture"
+											srcset=""
+										/>
+									</a>
+									<p class="post-name">{this.state.posts[i].author}</p>
+								</div>
+								<div class="post-settings">
+									<a href="#">
+										<img class="pure-img" src="imgs/report.svg" alt="" srcset="" />
+									</a>
+								</div>
+							</div>
+							<Link
+								to={{
+									pathname: "/chatpro",
+									state: { post: this.state.posts[i] },
+								}}
+							>
+							<div class="post-content">
+								<div className="player-wrapper">
+									<ReactPlayer
+										className="react-player"
+										url={this.state.posts[i].videoURL}
+										width="100%"
+										height="100%"
+									/>
+								</div>
+							</div></Link>
 						</div>
-						<div class="post-settings">
-							<a href="#">
-								<img class="pure-img" src="imgs/report.svg" alt="" srcset="" />
-							</a>
-						</div>
-					</div>
-					<div class="post-content">
-						<div className="player-wrapper">
-							<ReactPlayer
-								className="react-player"
-								url={this.state.posts[i].videoURL}
-								width="100%"
-								height="100%"
-							/>
-						</div>
-					</div>
-					</div>
-			);
+					);
+				}
+
+			}
+			console.log(posts)
+			return posts;
 		}
-		console.log(posts)
-		return posts;
+
 	}
 	render() {
 		return (

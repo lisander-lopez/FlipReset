@@ -153,7 +153,7 @@ class ChatPro extends Component {
 									srcset=""
 								/>
 							</a>
-							<p class="post-name">{this.props.user.username}</p>
+							<p class="post-name">{statePassedIn.author}</p>
 						</div>
 						<div class="post-settings">
 							<a href="#">
@@ -190,10 +190,7 @@ class ChatPro extends Component {
 							<span id="numberOfLikes">{this.state.likes}</span> likes
 						</div>
 						<div class="post-status">
-							<span id="userName">
-								<b>Username</b>
-							</span>
-							<span>This is a posttt</span>
+				
 						</div>
 						<div class="post-comments-container">
 							<ul class="post-comments">{this.generateComments()}</ul>
