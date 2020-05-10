@@ -23,10 +23,12 @@ app.use(function (req, res, next) {
 // Importing Routes
 const postsRoute = require("./routes/posts");
 const userRoute = require("./routes/user");
+const followRoute = require("./routes/follow");
 
 // Using Routes
 app.use("/posts", postsRoute);
 app.use("/user", userRoute);
+app.use("/follow", followRoute);
 
 app.get("/", (req, res) => {
 	res.send("HomePage");

@@ -29,19 +29,13 @@ class Search extends Component {
 		};
 	}
 	allUsersUID = async () => {
-		fetch(process.env.REACT_APP_MONGO_URL + "user/")
+		console.log(this.props.user.uid);
+		fetch(process.env.REACT_APP_MONGO_URL + "user/all/" + this.props.user.uid)
 			.then((res) => res.json())
 			.then((data) => {
 				let json = data;
+				this.setState({ json });
 				console.log(json);
-				this.addID(json).then((blah) => {
-					console.log(blah);
-					this.setState({
-						loaded: 1,
-						json: blah,
-					});
-					return blah;
-				});
 			})
 			.catch((err) => {
 				console.error(err);
@@ -52,6 +46,19 @@ class Search extends Component {
 		//let new = await this.addID();
 		return Promise.resolve();
 	}
+	async follow(idToFollow) {
+		//http://localhost:3060/follow/QezhFrwO92Z8i251URJKbqqTiNr2/UNTROLWt39WOzOWSHBrVUXnYObX2
+		console.log("IS TO FOLLOW", idToFollow);
+		await fetch(
+			process.env.REACT_APP_MONGO_URL +
+				"follow/" +
+				this.props.user.uid +
+				"/" +
+				idToFollow
+		);
+		//this.setState(this.state);
+		await this.allUsersUID();
+	}
 	render() {
 		if (this.state.json) {
 			console.log(this.state.json);
@@ -59,16 +66,21 @@ class Search extends Component {
 			for (let i = 0; i < this.state.json.length; i++) {
 				let curr = this.state.json[i];
 				users.push(
-					<div id="user">
-						<span className="user-id">UserID: {curr.userID}</span>
-						<span className="user-name">UserName: {curr.name}</span>
-						<span className="user-posts">Posts: {curr.posts.length}</span>
-						<span className="user-following">
-							Following: {curr.following.length}
-						</span>
-						<span className="user-followers">
-							Followers: {curr.followers.length}
-						</span>
+					<div className="search-block">
+						<a id="user" href="#" onClick={() => this.follow(curr.userID)}>
+							<p className="user-id">UserID: {curr.userID}</p>
+							<p className="user-name">UserName: {curr.displayName}</p>
+							<p className="user-posts">Posts: {curr.posts.length}</p>
+							<p className="user-following">
+								Following: {curr.following.length}
+							</p>
+							<p className="user-followers">
+								Followers: {curr.followers.length}
+							</p>
+							<p className="user-isFollowing">
+								Are you following Them?: {curr.isFollowing.toString()}
+							</p>
+						</a>
 					</div>
 				);
 			}

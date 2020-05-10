@@ -18,7 +18,7 @@ import { compose } from "recompose";
 import { saveURL } from "../redux/actions";
 
 import io from "socket.io-client";
-const socket = io('http://localhost:3030');
+const socket = io("http://localhost:3030");
 
 const tit = () => (
 	<div>
@@ -35,39 +35,59 @@ class Prof extends Component {
 			length: null,
 			error: null,
 		};
+		console.log(this.props.user);
 	}
 
 	componentDidMount() {
-		socket.on("timestamp", timestamp => {
-			const oldlen = this.state.length
-			console.log("RECEIVED EMISSION ACROSS --ALL-- CLIENTS")
-			console.log("OLD LENGTH OF VID ARRAY: " + oldlen)
-			console.log("CALLING GETVIDLIST. RETURNED INFO NOT UPDATED, NEEDS PROMISE/DELAY")
-			console.log('LOADING DATA...')
+		socket.on("timestamp", (timestamp) => {
+			const oldlen = this.state.length;
+			console.log("RECEIVED EMISSION ACROSS --ALL-- CLIENTS");
+			console.log("OLD LENGTH OF VID ARRAY: " + oldlen);
+			console.log(
+				"CALLING GETVIDLIST. RETURNED INFO NOT UPDATED, NEEDS PROMISE/DELAY"
+			);
+			console.log("LOADING DATA...");
 
-			this.props.firebase.getUserPosts(this.props.user.uid)
-				.then(result => {
-					console.log("NEW LENGTH OF VID ARRAY (NEEDS TO BE 1 HIGHER TO SIGNIFY UPDATED DB): " + result.length)
+			this.props.firebase.getUserPosts(this.props.user.uid).then(
+				(result) => {
+					console.log(
+						"NEW LENGTH OF VID ARRAY (NEEDS TO BE 1 HIGHER TO SIGNIFY UPDATED DB): " +
+							result.length
+					);
 					this.setState({
 						posts: result,
-						length: result.length
-					})
+						length: result.length,
+					});
 				},
-					error => {
-						console.log(error)
-					})
+				(error) => {
+					console.log(error);
+				}
+			);
 		});
 		this.props.firebase.getUserPosts(this.props.user.uid).then(
 			async (result) => {
 				this.setState({
 					posts: result,
-					length: result.length
+					length: result.length,
 				});
 			},
 			(error) => {
 				console.log(error);
 			}
 		);
+		this.getUserProf();
+	}
+
+	async getUserProf() {
+		fetch(process.env.REACT_APP_MONGO_URL + "user/" + this.props.user.uid)
+			.then((d) => d.json())
+			.then((data) => {
+				this.setState({
+					followers: data.followers,
+					following: data.following,
+				});
+				console.log(data);
+			});
 	}
 
 	handleSubmit(e) {
@@ -118,10 +138,16 @@ class Prof extends Component {
 				<div class="item2">
 					<img src={lessangry}></img>
 				</div>
-				<div class="item3">FRIENDS: 23</div>
+				<div class="item3">
+					Followers:{" "}
+					{this.state.followers ? this.state.followers.length : "Loading..."}
+				</div>
 				<div class="item4">POSTS: {this.state.length}</div>
 				<div class="item5">MESSAGE</div>
-				<div class="item6">FRIEND REQUEST</div>
+				<div class="item6">
+					Following:{" "}
+					{this.state.following ? this.state.following.length : "Loading..."}
+				</div>
 			</div>,
 
 			<div class="profile-feed">{this.generatePosts()}</div>,

@@ -12,6 +12,7 @@ router.get("/", async (req, res) => {
 		res.status(400).res({ message: error });
 	}
 });
+
 router.get("/:id", async (req, res) => {
 	try {
 		const user = await User.findOne({ userID: req.params.id });
@@ -21,6 +22,45 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
+// Get all users from perspective of :id and add following flag
+router.get("/all/:id", async (req, res) => {
+	try {
+		let ret = [];
+		const user = await User.findOne({ userID: req.params.id });
+		const allUsers = await User.find();
+		const copy = JSON.parse(JSON.stringify(allUsers));
+		console.log(user);
+		console.log("--------All other users------");
+		for (let i = 0; i < allUsers.length; i++) {
+			let listUser = copy[i];
+			console.log("list user", listUser);
+			if (listUser.userID !== req.params.id) {
+				console.log(user.following);
+				if (user.following.includes(listUser.userID)) {
+					console.log("ha");
+					listUser["isFollowing"] = true;
+				} else {
+					console.log("ha");
+					listUser["isFollowing"] = false;
+				}
+				console.log("IT IS", listUser["isFollowing"]);
+				ret.push(listUser);
+			}
+		}
+		console.log("ret", ret);
+		res.status(200).json(ret);
+		/*
+		
+		const jAllUsers = JSON.parse(allUsers);
+
+		console.log(jUser);
+		res.status(200).json(user);
+		*/
+	} catch (error) {
+		console.log(error);
+		res.status(400).json(error);
+	}
+});
 // Insert User
 router.post("/", async (req, res) => {
 	// Future References PLEASE ADD DISPLAY NAME
