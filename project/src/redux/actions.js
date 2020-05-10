@@ -41,6 +41,20 @@ export const userUID = (uid)=>({
 /**
  * Stores the username into the redux store
  * 
+ * @param {STRING} displayname
+ */
+export const displayNAME = (displayname)=>({
+    type: Actions.DISPLAY_NAME,
+    payload: {
+        displayname
+    }
+});
+
+
+
+/**
+ * Stores the username into the redux store
+ * 
  * @param {Number} money
  */
 export const userMoney = (money)=>({

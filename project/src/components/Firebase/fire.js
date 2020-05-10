@@ -19,7 +19,7 @@ const config = {
 	measurementId: process.env.REACT_APP_MEASUREMENTID,
 };
 
-class fire {
+class fire{
 	constructor() {
 		//console.log(process.env);
 		firebase.initializeApp(config);
@@ -185,7 +185,7 @@ class fire {
 					body: JSON.stringify({
 						UID: id,
 						video: String(timestamp),
-						author: 'usernamehere',
+						author: 'donelater',
 					}),
 				};
 				console.log("ID is " + id);

@@ -14,7 +14,7 @@ import "./login.css";
 import { compose } from 'recompose';
 import { withFirebase } from '../components/Firebase/context'
 import { connect } from 'react-redux';
-import { loginUser ,userUID} from '../redux/actions'; 
+import { loginUser ,userUID, displayNAME} from '../redux/actions'; 
 import { isCompositeComponent } from "react-dom/test-utils";
 
 
@@ -26,10 +26,12 @@ const SignInPage = () => (
 
 
 const INITIAL_STATE = {
+    username: '',
     email: '',
     password: '',
     error: null,
 };
+
 
 const ERROR_CODE_ACCOUNT_EXISTS =
     'auth/account-exists-with-different-credential';
@@ -46,17 +48,28 @@ class SignInFormBase extends Component {
 
         this.props.firebase
             .doSignInWithEmailAndPassword(email, password)
-         .then(() => {
+         .then(async(response)  => {
                 this.setState({ ...INITIAL_STATE });
                 this.props.loginUser(email)
                 console.log(this.props.user.username)
                 this.props.userUID(this.props.firebase.auth.currentUser.uid)
                 console.log(this.props.user.uid)
                 this.props.history.push('/home');
-            })
-            .catch(error => {
-                this.setState({ error });
+   
+                return; //dafuq
+            }).then(()=>{
+                //http://localhost:3060/user/UNTROLWt39WOzOWSHBrVUXnYObX2 
+                fetch(process.env.REACT_APP_MONGO_URL+"user/"+this.props.user.uid).then((res)=>res.json()).then((data)=>{
+                    this.props.displayNAME(data.displayName);
+                    console.error(this.props.user.displayname);
+                }).catch((err)=>{
+                    console.error(err);
+                })
             });
+            // .catch(error => {
+            //     this.setState({ error });
+            // });
+        
 
         event.preventDefault();
     };
@@ -125,7 +138,8 @@ const mapStateToProps = (state) => {
   
   const mapDispatchToProps = {
     loginUser,
-    userUID
+    userUID,
+    displayNAME
   }
   
   export default connect(mapStateToProps, mapDispatchToProps)(SignInForm);

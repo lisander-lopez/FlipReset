@@ -34,7 +34,7 @@ class Home extends Component {
 			length: null,
 			error: null,
 		};
-		this.handleLikePost = this.handleLikePost.bind(this);
+		// this.handleLikePost = this.handleLikePost.bind(this);
 	}
 
 	componentDidMount() {
@@ -79,40 +79,7 @@ class Home extends Component {
 	}
 
 
-	// async handleLikePost(e) {
-	// 	console.log(e);
-	// 	this.props.firebase.getLikes(this.state.posts.comments._id).then(
-	// 		async result => {
-	// 			this.setState({
-	// 				likes: result,
-	// 			});
-	// 		}, error => {
-	// 			console.log(error);
-	// 		});
-	// 	let postID = $(e.currentTarget).attr("value");
-	// 	$(e.currentTarget).addClass("active");
-	// 	await this.props.firebase.addLike(postID);
-	// 	console.log("Liked!");
-	// }
 
-
-
-	// generateComments() {
-	// 	let postComments = this.state.posts.comments;
-	// 	let comments = [];
-	// 	console.log("Post Comments: ", postComments);
-	// 	if (postComments) {
-	// 		for (var i = 0; i < postComments.length; i++) {
-	// 			comments.push(
-	// 				<li class="comment">
-	// 					<span class="username">{postComments[i].from}</span>
-	// 					<span class="comment-text">{postComments[i].content}</span>
-	// 				</li>
-	// 			);
-	// 		}
-	// 	}
-	// 	return comments;
-	// }
 
 
 	handleKeyUp() {
@@ -144,7 +111,7 @@ class Home extends Component {
 									srcset=""
 								/>
 							</a>
-							<p class="post-name">{this.state.posts[i].UID}</p>
+							<p class="post-name">{this.state.posts[i].author}</p>
 						</div>
 						<div class="post-settings">
 							<a href="#">

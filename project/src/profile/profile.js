@@ -114,7 +114,7 @@ class Prof extends Component {
 	render() {
 		return [
 			<div class="grid-container">
-				<div class="item1">{this.props.user.username}</div>
+				<div class="item1">{this.props.user.displayname}</div>
 				<div class="item2">
 					<img src={lessangry}></img>
 				</div>
