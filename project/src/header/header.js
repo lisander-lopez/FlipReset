@@ -40,7 +40,7 @@ class Head extends Component {
 		var timestamp = Number(new Date());
 		const file = new File([this.state.selectedFile], timestamp);
 		console.log(file);
-		this.props.firebase.doSubmitFile(file);
+		this.props.firebase.doSubmitFile(file,this.props.user.displayname);
 	};
 
 	onChangeHandler = (event) => {

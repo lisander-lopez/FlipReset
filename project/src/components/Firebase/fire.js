@@ -19,6 +19,8 @@ const config = {
 	measurementId: process.env.REACT_APP_MEASUREMENTID,
 };
 
+
+
 class fire{
 	constructor() {
 		//console.log(process.env);
@@ -158,7 +160,7 @@ class fire{
 		return image.getDownloadURL();
 	};
 
-	doSubmitFile = (file) => {
+	doSubmitFile = (file,name) => {
 		console.log("SUBMITTING FILE...");
 		var timestamp = new Date();
 		console.log(timestamp);
@@ -185,7 +187,7 @@ class fire{
 					body: JSON.stringify({
 						UID: id,
 						video: String(timestamp),
-						author: 'donelater',
+						author: name,
 					}),
 				};
 				console.log("ID is " + id);
