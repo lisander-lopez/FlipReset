@@ -1,24 +1,73 @@
 import React, { Component } from "react";
 import "./DM.css";
+import {
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	Link,
+	useRouteMatch,
+	withRouter,
+	useParams,
+} from "react-router-dom";
+import { withFirebase } from "../components/Firebase/context";
+import ReactPlayer from "react-player";
+import { connect } from "react-redux";
+import { compose } from "recompose";
+import { ListGroup } from "react-bootstrap";
+
+import io from "socket.io-client";
+const socket = io('http://localhost:3030');
+
+const tit = () => (
+	<div>
+		<SlideInMyDM />
+	</div>
+);
 
 class DM extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			sender: 'Justin'
+			allConvos: [],
 		};
 	}
 
+	async componentDidMount() {
+		let them;
+		this.props.firebase.doGetUser(this.state.theirName)
+			.then(async (result) => {
+				them = result;
+				console.log("their name: " + them);
+			}, error => {
+				console.log(error);
+			});
+		// this.props.firebase.doMakeNewDMConvo(this.props.user.displayname, this.state.theirName);
+		// this.props.firebase.doTestSendDM("message", this.props.user.displayname, this.state.theirName);
+
+		this.props.firebase.doGetUserDMConvos(this.props.user.displayname)
+			.then(async (result) => {
+				this.setState({
+					allConvos: result
+				});
+				console.log("convos updated: ", this.state.allConvos);
+			}, error => {
+				console.log(error)
+			});
+
+		this.props.firebase.doGetConvoMessages(this.props.user.displayname, this.state.theirName);
+	}
+
 	render() {
+		const loading = this.state.allConvos.length === 0;
 		return (
 			<div class="conversation-container">
+				<AllConversations update={this.props.firebase.doGetUserDMConvos(this.props.user.displayname)} />
 				<ConversationContainer />
 			</div>
 		);
 	}
 }
-export default DM;
 
 function newMessage(i, sender, message, didReceive) {
 	console.log(message);
@@ -42,7 +91,7 @@ class ConversationContainer extends Component {
 			// messages contains a list of message metadata
 			// the conversation component does all of the rendering
 			messages: [],
-			theirName: 'Justin',
+			theirName: 'gurgleswamp',
 			messageCount: 0,
 		}
 		this.updateMessageList = this.updateMessageList.bind(this);
@@ -57,7 +106,7 @@ class ConversationContainer extends Component {
 
 		this.setState({
 			messages: this.state.messages.concat(message),
-			messageCount: this.state.messages.length+1
+			messageCount: this.state.messages.length + 1
 		});
 	}
 
@@ -73,8 +122,8 @@ class ConversationContainer extends Component {
 				/>
 				<TextBox
 					i={this.state.messageCount}
-					sender={((this.state.messageCount %2 !== 0) ? this.state.theirName : "Me")}
-					didReceive={((this.state.messageCount %2 !== 0) ? true : false)}
+					sender={((this.state.messageCount % 2 !== 0) ? this.state.theirName : "Me")}
+					didReceive={((this.state.messageCount % 2 !== 0) ? true : false)}
 					udpate={this.updateMessageList}
 				/>
 			</div>
@@ -214,15 +263,57 @@ class ConversationNode extends Component {
 
 // List of all the conversations 
 class AllConversations extends Component {
-	generateConvos() {
-		let convos = [];
-
-	}
-
 	constructor(props) {
 		super(props);
 		this.state = {
+			conversations: [],
+		};
+		// this.generateConvoTabs = this.generateConvoTabs.bind(this);
+	}
 
-		}
+	async componentDidMount() {
+		this.props.update.then(
+			result => {
+				this.setState({ conversations: result });
+				console.log("PASSED CONVOS: ", this.state.conversations);
+			}, error => {
+				console.log(error);
+			}
+		);
+	}
+
+	printConvos(){
+		// const {data} = this.state;
+		let len = this.state.conversations.length;
+		console.log("all convos to be parsed: ", this.state.conversations);
+		console.log("arr len: ", len);
+	}
+
+	render() {
+		return (
+			<ul class="conversation-list">
+				{this.printConvos()}
+				{this.state.conversations.map(data => {
+					return (
+						<li key={data}>
+							{data}
+						</li>
+					);
+				})}
+			</ul>
+		);
 	}
 }
+
+
+const SlideInMyDM = compose(withRouter, withFirebase)(DM);
+
+const mapStateToProps = (state) => {
+	const { user } = state;
+	return {
+		user,
+	};
+};
+
+
+export default connect(mapStateToProps, null)(SlideInMyDM);

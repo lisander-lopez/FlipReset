@@ -21,7 +21,7 @@ const config = {
 
 
 
-class fire{
+class fire {
 	constructor() {
 		//console.log(process.env);
 		firebase.initializeApp(config);
@@ -142,6 +142,21 @@ class fire{
 		return postComments;
 	};
 
+	// Get a user by display name
+	doGetUser = async (displayName) => {
+		let allUsersDB = await fetch(databaseURL + "user/");
+		let allUsers = await allUsersDB.json();
+		for (let i = 0; i < allUsers.length; i++) {
+			let temp = allUsers[i];
+			if (temp.displayName === displayName) {
+				console.log("user found!");
+				return temp.displayName;
+			}
+		}
+		console.log("username not found :(");
+		return null;
+	}
+
 	getName = async (uid) => {
 		/*
 		firebase
@@ -160,7 +175,7 @@ class fire{
 		return image.getDownloadURL();
 	};
 
-	doSubmitFile = (file,name) => {
+	doSubmitFile = (file, name) => {
 		console.log("SUBMITTING FILE...");
 		var timestamp = new Date();
 		console.log(timestamp);
@@ -203,6 +218,50 @@ class fire{
 			}
 		});
 	};
+
+	// Gets all DM conversation threads associated with that user
+	doGetUserDMConvos = async (name) => {
+		let convos = [];
+		this.db.ref("DMConvos/"+name).on("value", snapshot => {
+			snapshot.forEach((snap) => {
+				console.log(snap.val());
+				convos.push(snap.val());
+			});
+		});
+		return convos;
+	}
+
+	doGetConvoMessages = async (name, recipient) => {
+		let messages = [];
+		this.db.ref("DMConvos/"+name+"/"+recipient).on("value", snapshot => {
+			snapshot.forEach((snap) => {
+				console.log(snap.val().content);
+				messages.push(snap.val());
+			});
+		});
+		return messages;
+	}
+
+	doTestSendDM = async (message, person1, person2) => {
+		this.db.ref("DMConvos/"+person1+"/"+person2).push({
+			content: message,
+			timestamp: String(new Date()),
+			sender: person1,
+		});
+		this.db.ref("DMConvos/"+person2+"/"+person1).push({
+			content: message,
+			timestamp: String(new Date()),
+			sender: person1,
+		});
+	}
+
+	// doSendDM = async (convoID) => {
+	// 	let recipient = await this.doGetUser(displayName);
+	// }
+
+	doListenDM = async (convoID) => {
+
+	}
 
 	doCreateUserWithEmailAndPassword = (email, password) => {
 		return this.auth.createUserWithEmailAndPassword(email, password);
