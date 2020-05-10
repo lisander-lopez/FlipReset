@@ -173,7 +173,7 @@ class Home extends Component {
 						</div>
 					);
 				}
-
+				flag = false;
 			}
 			console.log(posts)
 			return posts;
