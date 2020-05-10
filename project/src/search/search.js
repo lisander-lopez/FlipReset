@@ -17,7 +17,7 @@ import { userUID } from "../redux/actions";
 
 const xyz = () => (
 	<div>
-		<Ballsack />
+		<Ballzck />
 	</div>
 );
 
@@ -68,19 +68,20 @@ class Search extends Component {
 				users.push(
 					<div className="search-block">
 						<a id="user" href="#" onClick={() => this.follow(curr.userID)}>
-							<p className="user-id">UserID: {curr.userID}</p>
+							{/* <p className="user-id">UserID: {curr.userID}</p> */}
 							<p className="user-name">UserName: {curr.displayName}</p>
-							<p className="user-posts">Posts: {curr.posts.length}</p>
+							{/* <p className="user-posts">Posts: {curr.posts.length}</p>
 							<p className="user-following">
 								Following: {curr.following.length}
 							</p>
 							<p className="user-followers">
 								Followers: {curr.followers.length}
-							</p>
+							</p> */}
+							<p>Click To follow then go to home page to see your friends videos !!! </p>
 							<p className="user-isFollowing">
-								Are you following Them?: {curr.isFollowing.toString()}
+								Are you following them now ?? {curr.isFollowing.toString()}
 							</p>
-						</a>
+						</a><br/>
 					</div>
 				);
 			}
@@ -95,7 +96,7 @@ class Search extends Component {
 	}
 }
 
-const Ballsack = compose(withRouter, withFirebase)(Search);
+const Ballzck = compose(withRouter, withFirebase)(Search);
 
 const mapStateToProps = (state) => {
 	const { user } = state;
@@ -107,4 +108,4 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
 	userUID,
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Ballsack);
+export default connect(mapStateToProps, mapDispatchToProps)(Ballzck);
