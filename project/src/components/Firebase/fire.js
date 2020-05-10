@@ -185,7 +185,7 @@ class fire {
 					body: JSON.stringify({
 						UID: id,
 						video: String(timestamp),
-						author: id,
+						author: 'usernamehere',
 					}),
 				};
 				console.log("ID is " + id);
