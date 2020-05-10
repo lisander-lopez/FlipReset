@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
 	// Future CHECK FOR DUPLICATES IN DATABSE!
 	const user = new User({
 		userID: req.body.UID,
-		//displayName: req.body.displayName,
+		displayName: req.body.displayName,
 	});
 	try {
 		const dbUser = await user.save();

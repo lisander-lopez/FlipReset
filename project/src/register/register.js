@@ -56,6 +56,7 @@ class SignUpFormBase extends Component {
           },
           body: JSON.stringify({
             UID: authUser.user.uid,
+            username: username
           })}
           fetch("http://localhost:3060/user", options)
           .then(()=>{
@@ -70,6 +71,11 @@ class SignUpFormBase extends Component {
       })
       .then(() => {
         this.setState({ ...INITIAL_STATE });
+        var user = this.props.firebase.auth.currentUser;
+        user.updateProfile({
+          displayName: username,
+        });
+
         this.props.history.push(<Redirect to="/home"/>);
       })
       .catch(error => {

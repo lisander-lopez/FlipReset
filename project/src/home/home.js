@@ -16,6 +16,9 @@ import ReactPlayer from "react-player";
 import { connect } from "react-redux";
 import { compose } from "recompose";
 
+import io from "socket.io-client";
+const socket = io('http://localhost:3030');
+
 const tit = () => (
 	<div>
 		<Hohoho />
@@ -25,18 +28,92 @@ const tit = () => (
 class Home extends Component {
 	constructor(props) {
 		super(props);
+
 		this.state = {
-			source: null,
-			url: null,
+			posts: [],
+			length: null,
 			error: null,
 		};
+		this.handleLikePost = this.handleLikePost.bind(this);
 	}
 
-	async componentDidMount() {
-		const response = await this.props.firebase.doGrabFile();
-		this.setState({ source: response });
-		console.log(this.state.source);
+	componentDidMount() {
+		// const response = await this.props.firebase.doGrabFile();
+		// this.setState({ source: response });
+		// console.log(this.state.source);
+		socket.on("timestamp", timestamp => {
+			const oldlen = this.state.length
+			console.log("RECEIVED EMISSION ACROSS --ALL-- CLIENTS")
+			console.log("OLD LENGTH OF VID ARRAY: " + oldlen)
+			console.log("CALLING GETVIDLIST. RETURNED INFO NOT UPDATED, NEEDS PROMISE/DELAY")
+			console.log('LOADING DATA...')
+
+			this.props.firebase.getAllPosts()
+				.then(result => {
+					console.log("NEW LENGTH OF VID ARRAY (NEEDS TO BE 1 HIGHER TO SIGNIFY UPDATED DB): " + result.length)
+					this.setState({
+						posts: result,
+						length: result.length
+					})
+				},
+					error => {
+						console.log(error)
+					})
+		});
+		this.props.firebase.getAllPosts().then(
+			async (result) => {
+				console.log(result)
+				this.setState({
+					posts: result,
+					length: result.length
+				});
+			},
+			(error) => {
+				console.log(error);
+			}
+		);
+		
+		
+		
+
 	}
+
+
+	async handleLikePost(e) {
+		console.log(e);
+		this.props.firebase.getLikes(this.state.posts.comments._id).then(
+			async result => {
+				this.setState({
+					likes: result,
+				});
+			}, error => {
+				console.log(error);
+			});
+		let postID = $(e.currentTarget).attr("value");
+		$(e.currentTarget).addClass("active");
+		await this.props.firebase.addLike(postID);
+		console.log("Liked!");
+	}
+
+
+
+	generateComments() {
+		let postComments = this.state.posts.comments;
+		let comments = [];
+		console.log("Post Comments: ", postComments);
+		if (postComments) {
+			for (var i = 0; i < postComments.length; i++) {
+				comments.push(
+					<li class="comment">
+						<span class="username">{postComments[i].from}</span>
+						<span class="comment-text">{postComments[i].content}</span>
+					</li>
+				);
+			}
+		}
+		return comments;
+	}
+
 
 	handleKeyUp() {
 		$(".post-comment").keyup((data) => {
@@ -49,10 +126,13 @@ class Home extends Component {
 	}
 	generatePosts() {
 		console.log(this.props.user.username);
+		let userPosts = this.state.posts;
+		console.log("posts from state", userPosts);
 		let posts = [];
 		// Outer loop to create parent
-		for (let i = 0; i < 3; i++) {
+		for (let i = 0; i < this.state.posts.length; i++) {
 			//Create the parent and add the children
+			
 			posts.push(
 				<div class="post animated bounceInLeft delay-1s">
 					<div class="post-header">
@@ -64,7 +144,7 @@ class Home extends Component {
 									srcset=""
 								/>
 							</a>
-							<p class="post-name">Username {i}</p>
+							<p class="post-name">{this.state.posts[i].UID}</p>
 						</div>
 						<div class="post-settings">
 							<a href="#">
@@ -76,68 +156,16 @@ class Home extends Component {
 						<div className="player-wrapper">
 							<ReactPlayer
 								className="react-player"
-								url={this.state.source}
+								url={this.state.posts[i].videoURL}
 								width="100%"
 								height="100%"
 							/>
 						</div>
 					</div>
-					<div class="post-footer">
-						<div class="post-social">
-							<i class="las la-heart"></i>
-							<i class="lar la-comment"></i>
-						</div>
-						<div class="post-divide"></div>
-						<div class="post-LB">
-							<i class="las la-heart black-heart"></i>
-							<span id="numberOfLikes">{i}</span> likes
-						</div>
-						<div class="post-status">
-							<span id="userName">
-								<b>{this.props.user.username}</b>
-							</span>
-							<span>This is a posttt</span>
-						</div>
-						<div class="post-comments-container">
-							<ul class="post-comments">
-								<li class="comment">
-									<span class="username">Redder04</span>
-									<span class="comment-text">That was nuts!</span>
-								</li>
-								<li class="comment">
-									<span class="username">J.</span>
-									<span class="comment-text">Sick dude!</span>
-								</li>
-								<li class="comment">
-									<span class="username">Tr</span>
-									<span class="comment-text">No way!</span>
-								</li>
-								<li class="comment">
-									<span class="username">Mike</span>
-									<span class="comment-text">nuts</span>
-								</li>
-							</ul>
-						</div>
-						<div class="post-divide"></div>
-
-						<div class="input-container">
-							<input
-								type="text"
-								name="comment"
-								id="postComment1"
-								class="post-comment"
-								placeholder="Add a comment..."
-								onKeyUp={this.handleKeyUp}
-							/>
-							<a href="#" class="post-comment-link disabled">
-								Post
-							</a>
-						</div>
 					</div>
-				</div>
 			);
 		}
-		console.log(posts);
+		console.log(posts)
 		return posts;
 	}
 	render() {
