@@ -51,15 +51,21 @@ class DM extends Component {
 					allConvos: result
 				});
 				console.log("convos updated: ", this.state.allConvos);
+				console.log("updated convo length: ", this.state.allConvos.length);
 			}, error => {
 				console.log(error)
 			});
 
-		this.props.firebase.doGetConvoMessages(this.props.user.displayname, this.state.theirName);
+		this.props.firebase.doGetConvoMessages(this.props.user.displayname, this.state.theirName).then(
+			async (result) => {
+				console.log("messages: ", result);
+			}, error => {
+				console.log(error);
+			}
+		);
 	}
 
 	render() {
-		const loading = this.state.allConvos.length === 0;
 		return (
 			<div class="conversation-container">
 				<AllConversations update={this.props.firebase.doGetUserDMConvos(this.props.user.displayname)} />
@@ -282,17 +288,9 @@ class AllConversations extends Component {
 		);
 	}
 
-	printConvos(){
-		// const {data} = this.state;
-		let len = this.state.conversations.length;
-		console.log("all convos to be parsed: ", this.state.conversations);
-		console.log("arr len: ", len);
-	}
-
 	render() {
 		return (
 			<ul class="conversation-list">
-				{this.printConvos()}
 				{this.state.conversations.map(data => {
 					return (
 						<li key={data}>

@@ -235,7 +235,7 @@ class fire {
 		let messages = [];
 		this.db.ref("DMConvos/"+name+"/"+recipient).on("value", snapshot => {
 			snapshot.forEach((snap) => {
-				console.log(snap.val().content);
+				console.log("content: ", snap.val().content);
 				messages.push(snap.val());
 			});
 		});
