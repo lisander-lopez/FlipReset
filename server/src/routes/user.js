@@ -29,6 +29,7 @@ router.post("/", async (req, res) => {
 		userID: req.body.UID,
 		displayName: req.body.displayName,
 	});
+	console.log("Got Display name " + req.body.displayName);
 	try {
 		const dbUser = await user.save();
 		res.status(200).json(dbUser);

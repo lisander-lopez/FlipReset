@@ -6,17 +6,18 @@ import Home from "./home/home";
 import DM from "./directmessage/DM";
 import Profile from "./profile/profile";
 import ChatPro from "./profile/chatpro";
-import Login from "./login/login"
-import Register from "./register/register"
+import Login from "./login/login";
+import Register from "./register/register";
+import Search from "./search/search";
+
 import {
 	BrowserRouter as Router,
 	Switch,
 	Route,
 	Link,
 	useRouteMatch,
-	useParams
+	useParams,
 } from "react-router-dom";
-
 
 function App() {
 	return (
@@ -32,7 +33,7 @@ function App() {
 				href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
 			/>
 			<link rel="stylesheet" href="animate.css" />
-			
+
 			<Switch>
 				<Route path="/" exact>
 					<Login />
@@ -56,10 +57,13 @@ function App() {
 					<Header />
 					<ChatPro />
 				</Route>
+				<Route path="/search">
+					<Header />
+					<Search />
+				</Route>
 			</Switch>
 		</Router>
 	);
 }
 
 export default App;
-

@@ -4,8 +4,7 @@ import "firebase/database";
 import "firebase/storage";
 import axios from "axios";
 import io from "socket.io-client";
-const socket = io('http://localhost:3030');
-
+const socket = io("http://localhost:3030");
 
 // import 'firebase/messaging';
 const databaseURL = process.env.REACT_APP_MONGO_URL;
@@ -103,15 +102,15 @@ class fire {
 		await fetch(databaseURL + "posts/addLike/" + postID);
 		console.log("EMITTING FOR LIKE");
 		setTimeout(() => {
-			socket.emit("like", timestamp)
+			socket.emit("like", timestamp);
 		}, 500);
 	};
 
 	getLikes = async (postID) => {
 		let likesDB = await fetch(databaseURL + "posts/getLikes/" + postID);
 		let postLikes = await likesDB.json();
-		return (postLikes);
-	}
+		return postLikes;
+	};
 
 	postComment = async (com, id) => {
 		console.log("text to be uploaded", com);
@@ -131,15 +130,28 @@ class fire {
 			.catch((err) => console.log(err));
 		console.log("EMITTING FOR COMMENT");
 		setTimeout(() => {
-			socket.emit("comment", timestamp)
+			socket.emit("comment", timestamp);
 		}, 500);
 	};
 
 	getComments = async (postID) => {
 		let commentsDB = await fetch(databaseURL + "posts/comment/" + postID); // Get all comments associated with postID
 		let postComments = await commentsDB.json();
-		return (postComments);
-	}
+		return postComments;
+	};
+
+	getName = async (uid) => {
+		/*
+		firebase
+			.database()
+			.ref("users/" + uid)
+			.once("value", (snap) => {
+				var data = snap.val();
+				console.log(data);
+				return data;
+			});
+			*/
+	};
 
 	doGrabFile = (name) => {
 		const image = firebase.storage().ref().child(name);
@@ -147,7 +159,7 @@ class fire {
 	};
 
 	doSubmitFile = (file) => {
-		console.log("SUBMITTING FILE...")
+		console.log("SUBMITTING FILE...");
 		var timestamp = new Date();
 		console.log(timestamp);
 		let storeRef = this.storageRef.child(String(timestamp));
@@ -158,37 +170,36 @@ class fire {
 			},
 		};
 		// Updating metadata
-		const uploadTask = storeRef.put(file, metadata)
-		uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
-			var percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+		const uploadTask = storeRef.put(file, metadata);
+		uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (
+			snapshot
+		) {
+			var percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 			console.log(percent + "% DONE");
 			if (percent === 100) {
 				const requestOptions = {
 					method: "POST",
 					headers: {
-						"Content-Type": "application/json"
+						"Content-Type": "application/json",
 					},
 					body: JSON.stringify({
 						UID: id,
 						video: String(timestamp),
 						author: id,
-					})
-				}
+					}),
+				};
 				console.log("ID is " + id);
 				fetch(databaseURL + "posts", requestOptions)
 					.then((response) => response.json())
 					.then((data) => console.log(data))
 					.catch((err) => console.log(err));
 				console.log("Uploaded a blob or file!");
-				console.log("UPLOAD COMPLETE, EMITTING...")
+				console.log("UPLOAD COMPLETE, EMITTING...");
 				setTimeout(() => {
-					socket.emit("upload", timestamp)
+					socket.emit("upload", timestamp);
 				}, 4000);
-
 			}
 		});
-
-
 	};
 
 	doCreateUserWithEmailAndPassword = (email, password) => {
