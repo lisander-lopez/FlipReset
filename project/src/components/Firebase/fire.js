@@ -222,12 +222,8 @@ class fire {
 	// Gets all DM conversation threads associated with that user
 	doGetUserDMConvos = async (name) => {
 		let convos = [];
-		this.db.ref("DMConvos/"+name).on("value", snapshot => {
-			snapshot.forEach((snap) => {
-				console.log(snap.val());
-				convos.push(snap.val());
-			});
-		});
+		let userDB = await fetch(databaseURL + "convos/" + name); // Get all posts ID associated with User
+
 		return convos;
 	}
 

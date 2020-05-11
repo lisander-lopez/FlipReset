@@ -24,11 +24,13 @@ app.use(function (req, res, next) {
 const postsRoute = require("./routes/posts");
 const userRoute = require("./routes/user");
 const followRoute = require("./routes/follow");
+const dmRoute = require("./routes/dms");
 
 // Using Routes
 app.use("/posts", postsRoute);
 app.use("/user", userRoute);
 app.use("/follow", followRoute);
+app.use("/dms", dmRoute);
 
 app.get("/", (req, res) => {
 	res.send("HomePage");
