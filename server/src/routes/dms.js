@@ -4,7 +4,7 @@ const User = require("../models/User");
 const DirMsg = require("../models/DirMsg")
 const router = express.Router();
 
-// Get all convos from DB. 
+// Get all DM Users from DB. 
 router.get("/", async (req, res) => {
   try {
     const allDMs = await DirMsg.find();
@@ -20,6 +20,7 @@ router.post("/", async (req, res) => {
   console.log("userID: ", req.body.userID);
   const userDMs = new DirMsg({
     userID: req.body.userID,
+    displayname: req.body.displayname,
     convos: [],
   });
   try {
@@ -45,10 +46,10 @@ router.get("/:userID", async (req, res) => {
 router.post("/:userID", async (req, res) => {
   // FIRST CHECK IF UID IS IN DATABASE
   console.log("POST REQUEST TO /dms/", req.body.userID);
-  console.log("recipient ", req.body.recipID);
+  console.log("recipient ", req.body.recipient);
   const userID = req.body.userID;
   const convo = [{
-    recipientID: req.body.recipID,
+    recipient: req.body.recipient,
     messages: [],
   }];
   try {
@@ -68,9 +69,10 @@ router.post("/:userID", async (req, res) => {
 router.post("/:userID/convos/:recipID", async (req, res) => {
   const message = req.body.message;
   const recipID = req.params.recipID;
+  console.log("recip: ", recipID, " message: ", message);
   try {
     const userConvo = await DirMsg.findOneAndUpdate(
-      { userID: req.params.userID, "convos.recipientID": recipID },
+      { userID: req.params.userID, "convos.recipient": recipID },
       { $push: { "convos.$.messages": { from: message.from, content: message.content } } }
     );
     res.status(200).json(userConvo);

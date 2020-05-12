@@ -30,43 +30,109 @@ class DM extends Component {
 		super(props);
 		this.state = {
 			allConvos: [],
+			activeConvo: {
+				recipient: '',
+				messages: [],
+			},
+			activeConvoID: 1,
+
 		};
-		console.log(this.props.user);
+		console.log(this.props.user.displayname);
+		this.setActiveConvoID = this.setActiveConvoID.bind(this);
+		this.setActiveConvo = this.setActiveConvo.bind(this);
+		this.updateMessageList = this.updateMessageList.bind(this);
 	}
 
 	async componentDidMount() {
+		
+	}
 
+	setActiveConvoID(event, id) {
+		event.preventDefault();
+		this.setState({
+			activeConvoID: id,
+		});
+		this.setActiveConvo(this.props.user.displayname);
+		console.log("active convo: ", this.state.activeConvoID);
+	}
+
+	async setActiveConvo(name) {
+		let id = this.state.activeConvoID;
+		this.props.firebase.doGetConvo(name, id)
+			.then(res => {
+				this.setState({
+					activeConvo: {
+						recipient: res.recipient,
+						messages: res.messages,
+					}
+				});
+			}, e => {
+				console.log(e);
+			}
+			);
+	}
+
+	async updateMessageList(message) {
+		console.log("SENDING: ", message[0].message)
+		this.props.firebase.doSendDM(this.props.user.displayname, this.state.activeConvo.recipient, message[0].message)
+			.then(res => {
+				console.log(res);
+			}, e => {
+				console.log(e);
+			}
+			);
+		console.log(this.state.activeConvo);
 	}
 
 	render() {
 		return (
 			<div className="conversation-container">
+				{this.state.activeConvoID}
 				<AllConversations
-					userID={this.props.user.uid}
+					user={this.props.user.displayname}
+					activeConvoID={this.setActiveConvoID}
 					addConvo={this.props.firebase.doAddUserDMConvo}
 					addDMUser={this.props.firebase.doAddUserDM}
-					getUser={this.props.doGetUser}
+					getUser={this.props.firebase.doGetUser}
 					getConvos={this.props.firebase.doGetUserDMConvos}
+					isUser={this.props.firebase.doIsDMUser}
 				/>
-				<ConversationContainer />
+				<div className="conversation-header">
+					<h3>Conversation with {this.state.activeConvo.recipient}</h3>
+					<h5>{this.state.activeConvo.messages.length} messages</h5>
+				</div>
+				<ul className="conversation-list">
+					{this.state.activeConvo.messages.map(data => {
+						return (
+							<li key={data.i}>
+								{newMessage(data.i, data.from, data.content)}
+							</li>
+						);
+					})}
+				</ul>
+				<TextBox
+					i={this.state.activeConvo.messages.length}
+					sender={this.props.user.displayname}
+					udpate={this.updateMessageList}
+				/>
 			</div>
 		);
 	}
 }
 
-function newMessage(i, sender, message, didReceive) {
+function newMessage(i, sender, message) {
 	console.log(message);
 	return (
-		<Message i={i} sender={sender} message={message} didReceive={didReceive} />
+		<Message i={i} sender={sender} message={message} />
 	);
 }
 
 const TestData = [
-	{ i: 0, sender: "Me", message: "hello there", didReceive: false },
-	{ i: 1, sender: "Justin", message: "General kenobi!", didReceive: true },
-	{ i: 2, sender: "Me", message: "only a sith deals in absolutes!", didReceive: false },
-	{ i: 3, sender: "Justin", message: "take a seat, young skywalker.", didReceive: true },
-	{ i: 4, sender: "Me", message: "I am the senate!", didReceive: false },
+	{ i: 0, sender: "Me", message: "hello there" },
+	{ i: 1, sender: "Justin", message: "General kenobi!" },
+	{ i: 2, sender: "Me", message: "only a sith deals in absolutes!" },
+	{ i: 3, sender: "Justin", message: "take a seat, young skywalker." },
+	{ i: 4, sender: "Me", message: "I am the senate!" },
 ];
 
 const TestConvoTabs = [
@@ -75,95 +141,9 @@ const TestConvoTabs = [
 	{ i: 2, recipient: "Redder04" },
 ]
 
-class ConversationContainer extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			// messages contains a list of message metadata
-			// the conversation component does all of the rendering
-			messages: [],
-			theirName: 'gurgleswamp',
-			messageCount: 0,
-		}
-		this.updateMessageList = this.updateMessageList.bind(this);
-	}
-
-	// will be attached to send button of text box
-	updateMessageList(message) {
-		// const msgs = this.state.messages;
-		// let tempMsgs = [];
-		// tempMsgs.concat(msgs);
-		// tempMsgs.push(message);
-
-		this.setState({
-			messages: this.state.messages.concat(message),
-			messageCount: this.state.messages.length + 1
-		});
-	}
-
-	render() {
-		return (
-			<div className="conversation-container">
-				{/* <div>my name: {this.props.user.username}</div> */}
-				<ConversationHeader
-					sender={this.state.theirName}
-					messageCount={this.state.messageCount}
-				/>
-				<ConversationThread
-					messages={this.state.messages}
-				/>
-				<TextBox
-					i={this.state.messageCount}
-					sender={((this.state.messageCount % 2 !== 0) ? this.state.theirName : "Me")}
-					didReceive={((this.state.messageCount % 2 !== 0) ? true : false)}
-					udpate={this.updateMessageList}
-				/>
-			</div>
-		);
-	}
-}
-
-// Conversation is just a render helper. It is a glorified list, taking in the messages
-// state from conversationContainer
-class ConversationThread extends Component {
-	render() {
-		return (
-			<ul className="conversation-list">
-				{this.props.messages.map(data => {
-					return (
-						<li key={data.i}>
-							{newMessage(data.i, data.sender, data.message, data.didReceive)}
-						</li>
-					);
-				})}
-			</ul>
-		);
-	}
-}
-
-class ConversationHeader extends Component {
-	constructor(props) {
-		super(props);
-	}
-	render() {
-		return (
-			<div className="conversation-header">
-				<h3>Conversation with {this.props.sender}</h3>
-				<h5>{this.props.messageCount} messages</h5>
-			</div>
-		);
-	}
-}
-
 class Message extends Component {
 	constructor(props) {
 		super(props);
-		this.toggleReceive = this.toggleReceive.bind(this);
-	}
-
-	// not used yet
-	toggleReceive() {
-		return (this.props.didReceive);
 	}
 
 	render() {
@@ -212,7 +192,7 @@ class TextBox extends Component {
 		this.setState({
 			messageText: '',
 		});
-		return ([{ i: this.props.i, sender: this.props.sender, message: text, didReceive: this.props.didReceive }]);
+		return ([{ i: this.props.i, sender: this.props.sender, message: text }]);
 	}
 
 	render() {
@@ -244,13 +224,15 @@ class AllConversations extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			activeConvo: 0,
+			nameText: '',
+			activeConvoID: this.props.activeConvoID,
 			conversations: [],
 		};
-		this.selectConvo = this.selectConvo.bind(this);
+		this.createNewConvo = this.createNewConvo.bind(this);
 	}
 
 	async componentDidMount() {
+		console.log(this.props.user);
 		socket.on("timestamp", timestamp => {
 			console.log("TIMESTAMP HIT! Getting convos...");
 			this.props.getConvos(this.props.user).then(
@@ -276,14 +258,132 @@ class AllConversations extends Component {
 		);
 	}
 
+	async createNewConvo() {
+		let myID = this.props.user;
+		let them = this.state.nameText;
+		// isUser checks the DM database not the users
+
+		let theirID = await this.props.getUser(them);
+		if (theirID == null) {
+			console.log("not a user.");
+			this.setState({
+				nameText: ''
+			});
+			return;
+		}
+
+		this.props.isUser(myID).then(
+			result => {
+				if (result == []) {
+					this.props.addDMUser(myID).then(
+						secondResult => {
+							console.log(secondResult)
+						}, error => {
+							console.log(error);
+						});
+				}
+			}, error => {
+				console.log(error);
+			}
+		);
+
+		this.props.isUser(them).then(
+			result => {
+				if (result == []) {
+					this.props.addDMUser(them).then(
+						secondResult => {
+							console.log(secondResult)
+						}, error => {
+							console.log(error);
+						});
+				}
+			}, error => {
+				console.log(error);
+			}
+		);
+		console.log("them: :", them);
+		console.log("myID:", myID);
+
+		this.props.getConvos(myID).then(
+			result => {
+				if (result == []) {
+					this.props.addConvo(myID, them).then(
+						secondResult => {
+							console.log(secondResult)
+						}, error => {
+							console.log(error);
+						});
+				}
+				else {
+					let found = false;
+					for (let i = 0; i < result.length; i++) {
+						if (result[i].recipient == them)
+							found = true;
+					}
+					if (!found)
+						this.props.addConvo(myID, them)
+				}
+			}, error => {
+				console.log(error);
+			}
+		);
+		this.props.getConvos(them).then(
+			result => {
+				if (result == []) {
+					this.props.addConvo(them, myID).then(
+						secondResult => {
+							console.log(secondResult)
+						}, error => {
+							console.log(error);
+						});
+				}
+				else {
+					let found = false;
+					for (let i = 0; i < result.length; i++) {
+						if (result[i].recipient == myID)
+							found = true;
+					}
+					if (!found)
+						this.props.addConvo(them, myID)
+				}
+			}, error => {
+				console.log(error);
+			}
+		);
+		this.setState({
+			nameText: ''
+		});
+		// get user
+		// let this.state.nameText = await this.props.
+	}
+
+
+
+	handleChange = name => event => {
+		event.preventDefault();
+		this.setState({
+			[name]: event.target.value
+		});
+	}
+
 	render() {
 		return (
 			<div>
 				<ul className="conversation-list">
-					{TestConvoTabs.map(data => {
+					<li>
+						<input
+							value={this.state.nameText}
+							onChange={this.handleChange("nameText")}>
+						</input>
+						<button
+							onClick={this.createNewConvo}>
+							New Conversation
+						</button>
+					</li>
+					{this.state.conversations.map(data => {
 						return (
-							<li key={data.i}>
-								<button>
+							<li key={data._id}>
+								<button onClick={(event) => this.props.activeConvoID(event, data._id)}>
 									{data.recipient}
 								</button>
 							</li>

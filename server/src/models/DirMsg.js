@@ -5,9 +5,13 @@ const DMSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	displayname:{
+		type: String,
+		required: true,
+	},
 	convos: [
 		{
-			recipientID: {
+			recipient:{
 				type: String,
 				required: true,
 			},
