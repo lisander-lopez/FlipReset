@@ -16,6 +16,8 @@ router.get("/", async (req, res) => {
 
 // make a new user in the DM's portion of the DB
 router.post("/", async (req, res) => {
+  console.log("POST REQUEST TO /dms/");
+  console.log("userID: ", req.body.userID);
   const userDMs = new DirMsg({
     userID: req.body.userID,
     convos: [],
@@ -31,6 +33,7 @@ router.post("/", async (req, res) => {
 // Get a user; used to obtain their list of convos
 router.get("/:userID", async (req, res) => {
   try {
+    console.log("GET REQUEST TO /dms/", req.params.userID);
     const userID = await DirMsg.findOne({ userID: req.params.userID });
     res.status(200).json(userID);
   } catch (error) {
@@ -41,9 +44,11 @@ router.get("/:userID", async (req, res) => {
 // add a new convo to a user's list of convos
 router.post("/:userID", async (req, res) => {
   // FIRST CHECK IF UID IS IN DATABASE
+  console.log("POST REQUEST TO /dms/", req.body.userID);
+  console.log("recipient ", req.body.recipID);
   const userID = req.body.userID;
   const convo = [{
-    recipient: req.body.recipient,
+    recipientID: req.body.recipID,
     messages: [],
   }];
   try {
@@ -62,16 +67,30 @@ router.post("/:userID", async (req, res) => {
 // Post message to a conversation
 router.post("/:userID/convos/:recipID", async (req, res) => {
   const message = req.body.message;
-  const userConvo = await DirMsg.findOne({ userID: req.params.userID });
+  const recipID = req.params.recipID;
   try {
-    for (let i = 0; i < userConvo.convos.length; i++) {
-      if(userConvo.convos[i].recipientID == req.params.recipID){
-        userConvo.convos[i].push(message);
-      }
-    }
-  } catch(e){
-    res.status(400).json({messgae: e});
+    const userConvo = await DirMsg.findOneAndUpdate(
+      { userID: req.params.userID, "convos.recipientID": recipID },
+      { $push: { "convos.$.messages": { from: message.from, content: message.content } } }
+    );
+    res.status(200).json(userConvo);
+  } catch (e) {
+    res.status(400).json({ messgae: e });
   }
 });
 
 module.exports = router;
+
+
+/*
+
+    for (let i = 0; i < userConvo.convos.length; i++){
+      if(userConvo.convos[i].recipientID == recipID){
+        console.log("gotcha, bitch!");
+        userConvo.convos[i].messages.push(messasge);
+        console.log("message pushed:", userconvos.convos[i]);
+        res.status(200).json(message);
+      }
+    }
+
+*/

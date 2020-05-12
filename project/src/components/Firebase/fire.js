@@ -150,7 +150,7 @@ class fire {
 			let temp = allUsers[i];
 			if (temp.displayName === displayName) {
 				console.log("user found!");
-				return temp.displayName;
+				return temp.userID;
 			}
 		}
 		console.log("username not found :(");
@@ -219,41 +219,129 @@ class fire {
 		});
 	};
 
-	// Gets all DM conversation threads associated with that user
-	doGetUserDMConvos = async (name) => {
-		let convos = [];
-		let userDB = await fetch(databaseURL + "convos/" + name); // Get all posts ID associated with User
+	/* TODO: 
+		- add new user with convos FIRST
+		- then test getting the convos
+		- then add messages to the convos
+		- then add front end functionality
+	*/
 
-		return convos;
+	// Add new user to the DM collection
+	doAddUserDM = async (userID, recipID) => {
+		// PERSON 1
+		console.log("userID to be added: ", userID);
+		var timestamp = new Date();
+		// Post comment
+		const requestOptions = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				userID: userID,
+				convos: [],
+			}),
+		};
+		fetch(databaseURL + "dms/", requestOptions)
+			.then((response) => response.json())
+			.then((data) => console.log(data))
+			.catch((err) => console.log(err));
+		console.log("EMITTING FOR DM USER CREATION");
+		setTimeout(() => {
+			socket.emit("dmUser", timestamp);
+		}, 500);
 	}
 
-	doGetConvoMessages = async (name, recipient) => {
-		let messages = [];
-		this.db.ref("DMConvos/"+name+"/"+recipient).on("value", snapshot => {
-			snapshot.forEach((snap) => {
-				console.log("content: ", snap.val().content);
-				messages.push(snap.val());
-			});
-		});
+	doAddUserDMConvo = async (userID, recipient) => {
+		const recipID = await this.doGetUser(recipient);
+		console.log("convo to be added between ", userID, " and ", recipID);
+		var timestamp = new Date();
+		// Post comment
+		const requestOptions = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				userID: userID,
+				recipID: recipID,
+				messages: [],
+			}),
+		};
+		fetch(databaseURL + "dms/" + userID, requestOptions)
+			.then((response) => response.json())
+			.then((data) => console.log(data))
+			.catch((err) => console.log(err));
+		console.log("EMITTING FOR DM CONVO CREATION");
+		setTimeout(() => {
+			socket.emit("convo", timestamp);
+		}, 500);
+	}
+
+	// Gets all DM conversation threads associated with that user
+	doGetUserDMConvos = async (userID) => {
+		let userDB = await fetch(databaseURL + "dms/" + userID); // Get all convos associated with User
+		let userDMs = await userDB.json();
+
+		console.log("convos from: ", userDMs);
+		console.log("convosss: ", userDMs.convos);
+		return userDMs.convos;
+	}
+
+	doGetConvoMessages = async (userID, recipient) => {
+		let messages;
+		const recipID = await this.doGetUser(recipient);
+		let convos = await this.doGetUserDMConvos(userID);
+		for (let i = 0; i < convos.length; i++) {
+			if (convos[i].recipientID == recipID) {
+				messages = convos[i];
+				console.log("front end messages:", messages);
+			}
+		}
+
 		return messages;
 	}
 
-	doTestSendDM = async (message, person1, person2) => {
-		this.db.ref("DMConvos/"+person1+"/"+person2).push({
-			content: message,
-			timestamp: String(new Date()),
-			sender: person1,
-		});
-		this.db.ref("DMConvos/"+person2+"/"+person1).push({
-			content: message,
-			timestamp: String(new Date()),
-			sender: person1,
-		});
+	doTestSendDM = async (userID, recipient) => {
+		const message = { from: userID, content: "general kenobi!" };
+		const recipID = await this.doGetUser(recipient);
+		console.log("message to be added to convo between ", userID, " and ", recipID, ": ", message);
+		var timestamp = new Date();
+		// Post comment
+		const requestOptions = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				message: message
+			}),
+		};
+		fetch(databaseURL + "dms/" + userID + "/convos/" + recipID, requestOptions)
+			.then((response) => response.json())
+			.then((data) => console.log(data))
+			.catch((err) => console.log(err));
+		console.log("EMITTING FOR SENT DM");
+		setTimeout(() => {
+			socket.emit("convo", timestamp);
+		}, 500);
 	}
 
-	// doSendDM = async (convoID) => {
-	// 	let recipient = await this.doGetUser(displayName);
-	// }
+	doSendDM = async (userID, recipient, message) => {
+		const recipID = await this.doGetUser(recipient);
+		console.log("message to be added to convo between ", userID, " and ", recipID, ": ", message);
+		var timestamp = new Date();
+		// Post comment
+		const requestOptions = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				message: message
+			}),
+		};
+		fetch(databaseURL + "dms/" + userID + "/convos/" + recipID, requestOptions)
+			.then((response) => response.json())
+			.then((data) => console.log(data))
+			.catch((err) => console.log(err));
+		console.log("EMITTING FOR SENT DM");
+		setTimeout(() => {
+			socket.emit("convo", timestamp);
+		}, 500);
+	}
 
 	doListenDM = async (convoID) => {
 

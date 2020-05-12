@@ -23,6 +23,24 @@ io.on('connection', socket=> {
             text: timestamp,
         })
     })
+    socket.on("dmUser", timestamp => {
+        console.log("NEW DB USER, EMITTING....")
+        io.emit("timestamp", {
+            text: timestamp,
+        })
+    })
+    socket.on("convo", timestamp => {
+        console.log("NEW DM CONVO, EMITTING....")
+        io.emit("timestamp", {
+            text: timestamp,
+        })
+    })
+    socket.on("message", timestamp => {
+        console.log("MESSAGE SENT, EMITTING....")
+        io.emit("timestamp", {
+            text: timestamp,
+        })
+    })
 })
 
 app.listen (PORT, ()=>{

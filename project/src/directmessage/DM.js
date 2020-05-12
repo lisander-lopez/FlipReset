@@ -30,45 +30,56 @@ class DM extends Component {
 		super(props);
 		this.state = {
 			allConvos: [],
+			theirName: 'gurgleswamp'
 		};
+		console.log(this.props.user);
 	}
 
 	async componentDidMount() {
-		let them;
-		this.props.firebase.doGetUser(this.state.theirName)
-			.then(async (result) => {
-				them = result;
-				console.log("their name: " + them);
-			}, error => {
-				console.log(error);
-			});
+		let them  = await this.props.firebase.doGetUser(this.state.theirName);
+		// let message = { from: this.props.user.uid, content: "this is a message" }
+		// this.props.firebase.doSendDM(this.props.user.uid, this.state.theirName, message)
+		// 	.then(async (result) => {
+		// 		them = result;
+		// 		console.log("their uid: " + them);
+		// 	}, error => {
+		// 		console.log(error);
+		// 	});
 		// this.props.firebase.doMakeNewDMConvo(this.props.user.displayname, this.state.theirName);
 		// this.props.firebase.doTestSendDM("message", this.props.user.displayname, this.state.theirName);
+		this.props.firebase.doAddUserDM(them);
+		this.props.firebase.doAddUserDM(this.props.user.uid);
+		// this.props.firebase.doGetUserDMConvos(this.props.user.displayname)
+		// 	.then(async (result) => {
+		// 		this.setState({
+		// 			allConvos: result
+		// 		});
+		// 		console.log("convos updated: ", this.state.allConvos);
+		// 		console.log("updated convo length: ", this.state.allConvos.length);
+		// 	}, error => {
+		// 		console.log(error)
+		// 	});
 
-		this.props.firebase.doGetUserDMConvos(this.props.user.displayname)
-			.then(async (result) => {
-				this.setState({
-					allConvos: result
-				});
-				console.log("convos updated: ", this.state.allConvos);
-				console.log("updated convo length: ", this.state.allConvos.length);
-			}, error => {
-				console.log(error)
-			});
-
-		this.props.firebase.doGetConvoMessages(this.props.user.displayname, this.state.theirName).then(
-			async (result) => {
-				console.log("messages: ", result);
-			}, error => {
-				console.log(error);
-			}
-		);
+		// this.props.firebase.doGetConvoMessages(this.props.user.displayname, this.state.theirName).then(
+		// 	async (result) => {
+		// 		console.log("messages: ", result);
+		// 	}, error => {
+		// 		console.log(error);
+		// 	}
+		// );
 	}
 
 	render() {
 		return (
 			<div class="conversation-container">
-				<AllConversations update={this.props.firebase.doGetUserDMConvos(this.props.user.displayname)} />
+				<AllConversations
+					user={this.props.user}
+				// addConvo={this.props.firebase.doAddUserDMConvo(this.props.user.uid, this.state.theirName)}
+				// get convos
+				// getConvos={this.props.firebase.doGetUserDMConvos(this.props.user.uid)}
+				// getMessages={this.props.firebase.doGetConvoMessages(this.props.user.uid, this.state.theirName)}
+				// sendDM={this.props.firebase.doTestSendDM(this.props.user.uid, this.state.theirName)}
+				/>
 				<ConversationContainer />
 			</div>
 		);
@@ -119,6 +130,7 @@ class ConversationContainer extends Component {
 	render() {
 		return (
 			<div class="conversation-container">
+				{/* <div>my name: {this.props.user.username}</div> */}
 				<ConversationHeader
 					sender={this.state.theirName}
 					messageCount={this.state.messageCount}
@@ -278,14 +290,13 @@ class AllConversations extends Component {
 	}
 
 	async componentDidMount() {
-		this.props.update.then(
-			result => {
-				this.setState({ conversations: result });
-				console.log("PASSED CONVOS: ", this.state.conversations);
-			}, error => {
-				console.log(error);
-			}
-		);
+		// this.props.getConvos.then(
+		// 	result => {
+		// 		console.log("result: ", result);
+		// 	}, error => {
+		// 		console.log(error);
+		// 	}
+		// );
 	}
 
 	render() {
