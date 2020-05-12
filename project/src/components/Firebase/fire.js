@@ -19,9 +19,7 @@ const config = {
 	measurementId: process.env.REACT_APP_MEASUREMENTID,
 };
 
-
-
-class fire{
+class fire {
 	constructor() {
 		//console.log(process.env);
 		firebase.initializeApp(config);
@@ -47,7 +45,6 @@ class fire{
 
 	// Return list of .mp4 pertaining the user
 	getAllPosts = async () => {
-
 		let r = await axios.get(databaseURL + "posts/");
 		console.log(r);
 		let ret = [];
@@ -64,8 +61,6 @@ class fire{
 		}
 		return ret;
 	};
-
-
 
 	// Return list of .mp4 pertaining the user
 	getUserPosts = async (uid) => {
@@ -98,7 +93,6 @@ class fire{
 		return ret;
 	};
 
-
 	addLike = async (postID) => {
 		var timestamp = new Date();
 		await fetch(databaseURL + "posts/addLike/" + postID);
@@ -114,7 +108,7 @@ class fire{
 		return postLikes;
 	};
 
-	postComment = async (com, id) => {
+	postComment = async (com, id, name) => {
 		console.log("text to be uploaded", com);
 		var timestamp = new Date();
 		// Post comment
@@ -122,7 +116,8 @@ class fire{
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
-				UID: this.auth.currentUser.uid,
+				UID: name,
+				id: this.auth.currentUser.uid,
 				text: com,
 			}),
 		};
@@ -160,7 +155,7 @@ class fire{
 		return image.getDownloadURL();
 	};
 
-	doSubmitFile = (file,name) => {
+	doSubmitFile = (file, name) => {
 		console.log("SUBMITTING FILE...");
 		var timestamp = new Date();
 		console.log(timestamp);

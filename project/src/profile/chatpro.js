@@ -17,7 +17,7 @@ import { connect } from "react-redux";
 import { compose } from "recompose";
 
 import io from "socket.io-client";
-const socket = io('http://localhost:3030');
+const socket = io("http://localhost:3030");
 
 const tit = () => (
 	<div>
@@ -66,7 +66,7 @@ class ChatPro extends Component {
 
 	// generateLikes(){
 	// 	let postLikes = this.state.likes;
-		
+
 	// }
 
 	async handleLikePost(e) {
@@ -83,7 +83,11 @@ class ChatPro extends Component {
 		if (!$(".post-comment-link").hasClass("disabled")) {
 			let com = $("#postComment1").val();
 
-			await this.props.firebase.postComment(com, postID);
+			await this.props.firebase.postComment(
+				com,
+				postID,
+				this.props.user.displayname
+			);
 
 			$("#postComment1").val = "";
 			console.log("UPLOADED COMMENT!");
@@ -91,48 +95,65 @@ class ChatPro extends Component {
 	}
 
 	componentDidMount() {
-		socket.on("timestamp", timestamp => {
-			console.log("TIMESTAMP HIT! Getting likes and comments...")
-			this.props.firebase.getComments(this.props.history.location.state.post._id)
-				.then(result => {
+		socket.on("timestamp", (timestamp) => {
+			console.log("TIMESTAMP HIT! Getting likes and comments...");
+			this.props.firebase
+				.getComments(this.props.history.location.state.post._id)
+				.then(
+					(result) => {
+						console.log("LENGTH OF COMMENTS LIST FOR POST: " + result.length);
+						this.setState({
+							post: this.props.history.location.state.post,
+							comments: result,
+						});
+					},
+					(error) => {
+						console.log(error);
+					}
+				);
+			this.props.firebase
+				.getLikes(this.props.history.location.state.post._id)
+				.then(
+					(result) => {
+						this.setState({
+							likes: result,
+						});
+					},
+					(error) => {
+						console.log(error);
+					}
+				);
+		});
+		console.log(
+			"State not from timer: ",
+			this.props.history.location.state.post
+		);
+		this.props.firebase
+			.getComments(this.props.history.location.state.post._id)
+			.then(
+				async (result) => {
 					console.log("LENGTH OF COMMENTS LIST FOR POST: " + result.length);
 					this.setState({
 						post: this.props.history.location.state.post,
 						comments: result,
 					});
 				},
-					error => {
-						console.log(error);
-					});
-			this.props.firebase.getLikes(this.props.history.location.state.post._id)
-				.then(result => {
+				(error) => {
+					console.log(error);
+				}
+			);
+		this.props.firebase
+			.getLikes(this.props.history.location.state.post._id)
+			.then(
+				async (result) => {
 					this.setState({
 						likes: result,
 					});
-				}, error => {
+				},
+				(error) => {
 					console.log(error);
-				});
-		});
-		console.log("State not from timer: ", this.props.history.location.state.post);
-		this.props.firebase.getComments(this.props.history.location.state.post._id).then(
-			async result => {
-				console.log("LENGTH OF COMMENTS LIST FOR POST: " + result.length);
-				this.setState({
-					post: this.props.history.location.state.post,
-					comments: result
-				});
-			},
-			error => {
-				console.log(error)
-			});
-		this.props.firebase.getLikes(this.props.history.location.state.post._id).then(
-			async result => {
-				this.setState({
-					likes: result,
-				});
-			}, error => {
-				console.log(error);
-			});
+				}
+			);
 		this.setState({
 			post: this.props.history.location.state.post,
 		});
@@ -169,9 +190,13 @@ class ChatPro extends Component {
 								width="100%"
 								height="100%"
 								playing
-								config={{ file: { attributes: {
-									autoPlay: true,
-								  }}}}
+								config={{
+									file: {
+										attributes: {
+											autoPlay: true,
+										},
+									},
+								}}
 							/>
 						</div>
 					</div>
@@ -189,9 +214,7 @@ class ChatPro extends Component {
 							<i class="las la-heart black-heart"></i>
 							<span id="numberOfLikes">{this.state.likes}</span> likes
 						</div>
-						<div class="post-status">
-				
-						</div>
+						<div class="post-status"></div>
 						<div class="post-comments-container">
 							<ul class="post-comments">{this.generateComments()}</ul>
 						</div>
