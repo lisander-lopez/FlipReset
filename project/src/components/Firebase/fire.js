@@ -278,12 +278,17 @@ class fire {
 	doGetUserDMConvos = async (userID) => {
 		let userDB = await fetch(databaseURL + "dms/" + userID); // Get all convos associated with User
 		let userDMs = await userDB.json();
-
-		console.log("convos from: ", userDMs);
-		console.log("convosss: ", userDMs.convos);
-		return userDMs.convos;
+		if (userDMs == null){
+			console.log("No convos.")
+			return [];
+		}
+		else{
+			console.log("convos: ", userDMs.convos);
+			return userDMs.convos;
+		} 
 	}
 
+	// Gets all messages from a specific conversation between USERID and RECIPIENT
 	doGetConvoMessages = async (userID, recipient) => {
 		let messages;
 		const recipID = await this.doGetUser(recipient);
@@ -317,10 +322,11 @@ class fire {
 			.catch((err) => console.log(err));
 		console.log("EMITTING FOR SENT DM");
 		setTimeout(() => {
-			socket.emit("convo", timestamp);
+			socket.emit("message", timestamp);
 		}, 500);
 	}
-
+	
+	// Sends direct message to recipient
 	doSendDM = async (userID, recipient, message) => {
 		const recipID = await this.doGetUser(recipient);
 		console.log("message to be added to convo between ", userID, " and ", recipID, ": ", message);
@@ -339,7 +345,7 @@ class fire {
 			.catch((err) => console.log(err));
 		console.log("EMITTING FOR SENT DM");
 		setTimeout(() => {
-			socket.emit("convo", timestamp);
+			socket.emit("message", timestamp);
 		}, 500);
 	}
 

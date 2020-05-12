@@ -13,7 +13,7 @@ import { withFirebase } from "../components/Firebase/context";
 import ReactPlayer from "react-player";
 import { connect } from "react-redux";
 import { compose } from "recompose";
-import { ListGroup } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 
 import io from "socket.io-client";
 const socket = io('http://localhost:3030');
@@ -30,55 +30,23 @@ class DM extends Component {
 		super(props);
 		this.state = {
 			allConvos: [],
-			theirName: 'gurgleswamp'
 		};
 		console.log(this.props.user);
 	}
 
 	async componentDidMount() {
-		let them  = await this.props.firebase.doGetUser(this.state.theirName);
-		// let message = { from: this.props.user.uid, content: "this is a message" }
-		// this.props.firebase.doSendDM(this.props.user.uid, this.state.theirName, message)
-		// 	.then(async (result) => {
-		// 		them = result;
-		// 		console.log("their uid: " + them);
-		// 	}, error => {
-		// 		console.log(error);
-		// 	});
-		// this.props.firebase.doMakeNewDMConvo(this.props.user.displayname, this.state.theirName);
-		// this.props.firebase.doTestSendDM("message", this.props.user.displayname, this.state.theirName);
-		this.props.firebase.doAddUserDM(them);
-		this.props.firebase.doAddUserDM(this.props.user.uid);
-		// this.props.firebase.doGetUserDMConvos(this.props.user.displayname)
-		// 	.then(async (result) => {
-		// 		this.setState({
-		// 			allConvos: result
-		// 		});
-		// 		console.log("convos updated: ", this.state.allConvos);
-		// 		console.log("updated convo length: ", this.state.allConvos.length);
-		// 	}, error => {
-		// 		console.log(error)
-		// 	});
 
-		// this.props.firebase.doGetConvoMessages(this.props.user.displayname, this.state.theirName).then(
-		// 	async (result) => {
-		// 		console.log("messages: ", result);
-		// 	}, error => {
-		// 		console.log(error);
-		// 	}
-		// );
 	}
 
 	render() {
 		return (
-			<div class="conversation-container">
+			<div className="conversation-container">
 				<AllConversations
-					user={this.props.user}
-				// addConvo={this.props.firebase.doAddUserDMConvo(this.props.user.uid, this.state.theirName)}
-				// get convos
-				// getConvos={this.props.firebase.doGetUserDMConvos(this.props.user.uid)}
-				// getMessages={this.props.firebase.doGetConvoMessages(this.props.user.uid, this.state.theirName)}
-				// sendDM={this.props.firebase.doTestSendDM(this.props.user.uid, this.state.theirName)}
+					userID={this.props.user.uid}
+					addConvo={this.props.firebase.doAddUserDMConvo}
+					addDMUser={this.props.firebase.doAddUserDM}
+					getUser={this.props.doGetUser}
+					getConvos={this.props.firebase.doGetUserDMConvos}
 				/>
 				<ConversationContainer />
 			</div>
@@ -100,6 +68,12 @@ const TestData = [
 	{ i: 3, sender: "Justin", message: "take a seat, young skywalker.", didReceive: true },
 	{ i: 4, sender: "Me", message: "I am the senate!", didReceive: false },
 ];
+
+const TestConvoTabs = [
+	{ i: 0, recipient: "gurgleswamp" },
+	{ i: 1, recipient: "BringFreaks" },
+	{ i: 2, recipient: "Redder04" },
+]
 
 class ConversationContainer extends Component {
 	constructor(props) {
@@ -129,7 +103,7 @@ class ConversationContainer extends Component {
 
 	render() {
 		return (
-			<div class="conversation-container">
+			<div className="conversation-container">
 				{/* <div>my name: {this.props.user.username}</div> */}
 				<ConversationHeader
 					sender={this.state.theirName}
@@ -154,7 +128,7 @@ class ConversationContainer extends Component {
 class ConversationThread extends Component {
 	render() {
 		return (
-			<ul class="conversation-list">
+			<ul className="conversation-list">
 				{this.props.messages.map(data => {
 					return (
 						<li key={data.i}>
@@ -173,7 +147,7 @@ class ConversationHeader extends Component {
 	}
 	render() {
 		return (
-			<div class="conversation-header">
+			<div className="conversation-header">
 				<h3>Conversation with {this.props.sender}</h3>
 				<h5>{this.props.messageCount} messages</h5>
 			</div>
@@ -194,9 +168,9 @@ class Message extends Component {
 
 	render() {
 		return (
-			<div class="message animated bounceInLeft delay-1s">
-				<div class="message-header">
-					<div class="message-author">
+			<div className="message animated bounceInLeft delay-1s">
+				<div className="message-header">
+					<div className="message-author">
 						<a href="#">
 							<img
 								src="https://www.speakingtigerbooks.com/wp-content/uploads/2016/09/facebook-default-no-profile-pic.jpg"
@@ -204,9 +178,9 @@ class Message extends Component {
 								srcset=""
 							/>
 						</a>
-						<p class="message-name">{this.props.sender}</p>
+						<p className="message-name">{this.props.sender}</p>
 					</div>
-					<div class="message-text">
+					<div className="message-text">
 						{this.props.message}
 					</div>
 				</div>
@@ -243,19 +217,19 @@ class TextBox extends Component {
 
 	render() {
 		return (
-			<div class="input-container">
+			<div className="input-container">
 				<input
 					type="text"
 					name="messageText"
 					id="messageText"
-					class="message-message"
+					className="message-message"
 					placeholder="Enter your message to send..."
 					value={this.state.messageText}
 					onChange={this.handleChange("messageText")}
 				/>
 				<a
 					href="#"
-					class={`message-message-link ${this.state.isDisabled ? "disabled" : ""}`}
+					className={`message-message-link ${this.state.isDisabled ? "disabled" : ""}`}
 					onClick={() => this.props.udpate(this.buildMessageData())}
 				>
 					Send
@@ -265,51 +239,58 @@ class TextBox extends Component {
 	}
 }
 
-// individual element for AllConversations, clickable card to render the
-// selected conversation
-class ConversationNode extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			lasMessage: 'hi',
-			sender: 'Justin',
-			messageCount: '5'
-		}
-
-	}
-}
-
 // List of all the conversations 
 class AllConversations extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			activeConvo: 0,
 			conversations: [],
 		};
-		// this.generateConvoTabs = this.generateConvoTabs.bind(this);
+		this.selectConvo = this.selectConvo.bind(this);
 	}
 
 	async componentDidMount() {
-		// this.props.getConvos.then(
-		// 	result => {
-		// 		console.log("result: ", result);
-		// 	}, error => {
-		// 		console.log(error);
-		// 	}
-		// );
+		socket.on("timestamp", timestamp => {
+			console.log("TIMESTAMP HIT! Getting convos...");
+			this.props.getConvos(this.props.user).then(
+				result => {
+					this.setState({
+						conversations: result,
+					});
+					console.log("result: ", this.state.conversations);
+				}, error => {
+					console.log(error);
+				}
+			);
+		});
+		this.props.getConvos(this.props.user).then(
+			result => {
+				this.setState({
+					conversations: result,
+				});
+				console.log("result: ", this.state.conversations);
+			}, error => {
+				console.log(error);
+			}
+		);
 	}
 
 	render() {
 		return (
-			<ul class="conversation-list">
-				{this.state.conversations.map(data => {
-					return (
-						<li key={data}>
-							{data}
-						</li>
-					);
-				})}
-			</ul>
+			<div>
+				<ul className="conversation-list">
+					{TestConvoTabs.map(data => {
+						return (
+							<li key={data.i}>
+								<button>
+									{data.recipient}
+								</button>
+							</li>
+						);
+					})}
+				</ul>
+			</div>
 		);
 	}
 }
